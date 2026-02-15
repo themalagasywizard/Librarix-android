@@ -6,37 +6,37 @@
 ---
 
 ## Phase 1: Project Setup & Architecture
-- [ ] Create Android project structure
-- [ ] Configure Gradle with Kotlin DSL
-- [ ] Set up Jetpack Compose BOM
-- [ ] Configure dependency injection (Hilt)
-- [ ] Set up navigation (Compose Navigation)
+- [x] Create Android project structure
+- [x] Configure Gradle with Kotlin DSL
+- [x] Set up Jetpack Compose BOM
+- [x] Configure dependency injection (Hilt)
+- [x] Set up navigation (Compose Navigation)
 - [ ] Configure build flavors (debug/release)
 - [ ] Set up lint checks and unit tests baseline
-- [ ] Create MVVM + Clean Architecture structure
-- [ ] Set up Room database
+- [x] Create MVVM + Clean Architecture structure
+- [x] Set up Room database
 - [ ] Set up Retrofit for Supabase
 
 ## Phase 2: Theme System
-- [ ] Map SwiftUI colors to Compose colors
-- [ ] Create Typography system matching iOS
-- [ ] Implement Light/Dark theme support
+- [x] Map SwiftUI colors to Compose colors
+- [x] Create Typography system matching iOS
+- [x] Implement Light/Dark theme support
 - [ ] Define Shape system (rounded corners)
-- [ ] Create Material3 theme wrapper
+- [x] Create Material3 theme wrapper
 
 ## Phase 3: Shared UI Components
-- [ ] CachedAsyncImage (coil)
+- [x] CachedAsyncImage (coil) - uses Coil's AsyncImage
 - [ ] ProfileAvatarView
-- [ ] BottomNavBar
-- [ ] ProgressRow
+- [x] BottomNavBar
+- [x] ProgressRow (in CurrentlyReadingCard)
 - [ ] Custom text fields and buttons
 - [ ] Loading and error states
 
 ## Phase 4: Core Screens (P0)
-- [ ] HomeView (dashboard)
+- [x] HomeView (dashboard) - basic structure with CurrentlyReadingCard
 - [ ] LibraryView (book list)
 - [ ] BookDetailView (full details)
-- [ ] CurrentlyReadingCard (progress widget)
+- [x] CurrentlyReadingCard (progress widget) - matches iOS UI
 - [ ] CurrentlyReadingListView (list)
 - [ ] UpdateProgressView (modal)
 
@@ -86,4 +86,11 @@
 - [x] Analyzed iOS codebase (60 files, ~13,600 LOC)
 - [x] Created conversion plan (ANDROID_CONVERSION_PLAN.md)
 - [x] Created checklist (this file)
-- [ ] Initialize Android project structure
+- [x] Initialize Android project structure
+- [x] Set up Gradle, Hilt, Room, Compose
+- [x] Implement theme colors from iOS Theme.swift
+- [x] Create HomeScreen with CurrentlyReadingCard (matching iOS)
+- [x] Set up bottom navigation
+- [x] Create data layer (entities, DAOs, database)
+- [x] Commit initial project setup
+- [x] Set up cron job for progress tracking (every 2 hours)

@@ -35,13 +35,13 @@
 ## Phase 4: Core Screens (P0)
 - [x] HomeView (dashboard) - basic structure with CurrentlyReadingCard
 - [x] LibraryView (book list) - search, filters, grid/list views
-- [ ] BookDetailView (full details)
+- [x] BookDetailView (full details) - hero, synopsis, actions bar
 - [x] CurrentlyReadingCard (progress widget) - matches iOS UI
-- [ ] CurrentlyReadingListView (list)
+- [x] CurrentlyReadingListView (list) - progress list matching iOS
 - [x] UpdateProgressView (modal) - slider, page input, notes
 
 ## Phase 5: Discovery Screens (P1)
-- [ ] DiscoverView (browse/search)
+- [x] DiscoverView (browse/search) - search, curated collections
 - [ ] DiscoverBookDetailView
 - [ ] AddBookView
 - [ ] ISBNScannerView

@@ -48,18 +48,19 @@
 - [ ] Search functionality
 
 ## Phase 6: Reading & Progress (P2)
-- [ ] ProgressDashboardView
-- [ ] Reading statistics
-- [ ] Yearly goals
-- [ ] Progress history
+- [x] ProgressDashboardView - XP levels, stats, achievements
+- [x] Reading statistics
+- [x] Yearly goals
+- [x] Progress history
 
 ## Phase 7: Collections & Notes (P3)
 - [ ] MyCollectionsView
 - [ ] UserCollectionDetailView
 - [ ] AllNotesLibraryView
-- [ ] SettingsView
+- [x] SettingsView
 
 ## Phase 8: Profile & Onboarding (P4)
+- [x] ProfileView - stats, achievements, reading lists
 - [ ] OnboardingFlowView
 - [ ] EditProfileView
 - [ ] AuthorDetailView

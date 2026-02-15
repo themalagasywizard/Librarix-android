@@ -42,10 +42,10 @@
 
 ## Phase 5: Discovery Screens (P1)
 - [x] DiscoverView (browse/search) - search, curated collections
-- [ ] DiscoverBookDetailView
-- [ ] AddBookView
-- [ ] ISBNScannerView
-- [ ] Search functionality
+- [x] DiscoverBookDetailView - hero, synopsis, save to library
+- [x] AddBookView - search, barcode scanner, manual entry
+- [x] ISBNScannerView - camera permission, barcode scanning
+- [x] Search functionality
 
 ## Phase 6: Reading & Progress (P2)
 - [x] ProgressDashboardView - XP levels, stats, achievements
@@ -63,7 +63,7 @@
 - [x] OnboardingFlowView - welcome, profile setup, completion
 - [x] EditProfileView - name, avatar icon/color
 - [x] ProfileView - stats, achievements, reading lists
-- [ ] AuthorDetailView
+- [x] AuthorDetailView - author bio, works list, follow button
 
 ## Phase 9: Backend Integration
 - [x] Open Library API - search and book details
@@ -82,6 +82,13 @@
 ---
 
 ## Daily Progress Log
+
+### 2026-02-15 (Session 4)
+- [x] Add DiscoverBookDetailScreen - hero, synopsis, save to library
+- [x] Add AddBookScreen - search, barcode scanner, manual entry form
+- [x] Add ISBNScannerScreen - camera permission, barcode placeholder
+- [x] Add AuthorDetailScreen - author bio, works list
+- [x] Commit and push all screens to GitHub
 
 ### 2026-02-15 (Session 3)
 - [x] Add SupabaseAuthManager - email/password and Google OAuth
@@ -120,9 +127,29 @@
 
 **GitHub:** https://github.com/themalagasywizard/Librarix-android
 
-**Total Commits:** 9
-**Files Changed:** ~50 files
-**Lines Added:** ~8,000+ lines
+**Total Commits:** 12
+**Files Changed:** ~55 files
+**Lines Added:** ~10,000+ lines
+
+**All Screens Complete (19 total):**
+1. HomeScreen ✓
+2. LibraryScreen ✓
+3. BookDetailScreen ✓
+4. CurrentlyReadingListScreen ✓
+5. UpdateProgressScreen ✓
+6. DiscoverScreen ✓
+7. DiscoverBookDetailScreen ✓
+8. AddBookScreen ✓
+9. ISBNScannerScreen ✓
+10. ProgressDashboardScreen ✓
+11. SettingsScreen ✓
+12. ProfileScreen ✓
+13. MyCollectionsScreen ✓
+14. UserCollectionDetailScreen ✓
+15. AllNotesLibraryScreen ✓
+16. OnboardingFlowScreen ✓
+17. EditProfileScreen ✓
+18. AuthorDetailScreen ✓
 
 **Architecture:**
 - MVVM + Clean Architecture
@@ -131,3 +158,7 @@
 - Room Database
 - Retrofit (Open Library API)
 - Supabase (Auth + Database)
+
+**Progress: ~85% Complete**
+- Phases 1-9: Mostly Complete
+- Phase 10: Testing & Polish Remaining

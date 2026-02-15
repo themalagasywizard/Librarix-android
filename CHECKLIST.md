@@ -34,11 +34,11 @@
 
 ## Phase 4: Core Screens (P0)
 - [x] HomeView (dashboard) - basic structure with CurrentlyReadingCard
-- [ ] LibraryView (book list)
+- [x] LibraryView (book list) - search, filters, grid/list views
 - [ ] BookDetailView (full details)
 - [x] CurrentlyReadingCard (progress widget) - matches iOS UI
 - [ ] CurrentlyReadingListView (list)
-- [ ] UpdateProgressView (modal)
+- [x] UpdateProgressView (modal) - slider, page input, notes
 
 ## Phase 5: Discovery Screens (P1)
 - [ ] DiscoverView (browse/search)
@@ -82,15 +82,10 @@
 
 ## Daily Progress Log
 
-### 2026-02-15
-- [x] Analyzed iOS codebase (60 files, ~13,600 LOC)
-- [x] Created conversion plan (ANDROID_CONVERSION_PLAN.md)
-- [x] Created checklist (this file)
-- [x] Initialize Android project structure
-- [x] Set up Gradle, Hilt, Room, Compose
-- [x] Implement theme colors from iOS Theme.swift
-- [x] Create HomeScreen with CurrentlyReadingCard (matching iOS)
-- [x] Set up bottom navigation
-- [x] Create data layer (entities, DAOs, database)
-- [x] Commit initial project setup
-- [x] Set up cron job for progress tracking (every 2 hours)
+### 2026-02-15 (Continued)
+- [x] Implement LibraryScreen with search, filter chips, grid/list toggle
+- [x] Create SavedBookGridCard and SavedBookRow (matching iOS UI)
+- [x] Build UpdateProgressScreen with slider, page input, notes
+- [x] Add HomeViewModel with MVVM architecture
+- [x] Create LibraryRepository with Room binding
+- [x] Update checklist and commit progress

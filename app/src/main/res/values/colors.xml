@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors (from iOS Theme.swift) -->
+    <color name="lxPrimary">#1C4E5E</color>
+    <color name="lxPrimaryLight">#2A6F85</color>
+    <color name="lxAccentGold">#D1A000</color>
+
+    <!-- Background Colors -->
+    <color name="lxBackgroundLight">#F9FAFB</color>
+    <color name="lxBackgroundDark">#131C20</color>
+
+    <!-- Surface Colors -->
+    <color name="lxSurfaceDark">#1E2B34</color>
+    <color name="lxSurfaceLight">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="lxTextSecondary">#778A9B</color>
+
+    <!-- Border Colors -->
+    <color name="lxBorderLight">#00000014</color>
+    <color name="lxBorderDark">#FFFFFF1A</color>
+
+    <!-- Author Theme -->
+    <color name="lxAuthorPrimary">#242442</color>
+    <color name="lxAuthorBackgroundDark">#0B0B0E</color>
+    <color name="lxAuthorCardDark">#16161C</color>
+    <color name="lxAuthorTextSecondary">#A6A6B0</color>
+
+    <!-- Android Standard Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

@@ -54,22 +54,22 @@
 - [x] Progress history
 
 ## Phase 7: Collections & Notes (P3)
-- [ ] MyCollectionsView
-- [ ] UserCollectionDetailView
-- [ ] AllNotesLibraryView
+- [x] MyCollectionsView - create/view collections
+- [x] UserCollectionDetailView - hero header, book grid
+- [x] AllNotesLibraryView - notes list view
 - [x] SettingsView
 
 ## Phase 8: Profile & Onboarding (P4)
+- [x] OnboardingFlowView - welcome, profile setup, completion
+- [x] EditProfileView - name, avatar icon/color
 - [x] ProfileView - stats, achievements, reading lists
-- [ ] OnboardingFlowView
-- [ ] EditProfileView
 - [ ] AuthorDetailView
 
 ## Phase 9: Backend Integration
+- [x] Open Library API - search and book details
+- [x] Amazon Affiliate links - buy link generation
 - [ ] Supabase Auth
 - [ ] Supabase Database sync
-- [ ] Open Library API
-- [ ] Amazon Affiliate links
 
 ## Phase 10: Testing & Polish
 - [ ] Unit tests
@@ -83,10 +83,28 @@
 
 ## Daily Progress Log
 
-### 2026-02-15 (Continued)
-- [x] Implement LibraryScreen with search, filter chips, grid/list toggle
-- [x] Create SavedBookGridCard and SavedBookRow (matching iOS UI)
-- [x] Build UpdateProgressScreen with slider, page input, notes
-- [x] Add HomeViewModel with MVVM architecture
-- [x] Create LibraryRepository with Room binding
-- [x] Update checklist and commit progress
+### 2026-02-15 (Session 2)
+- [x] Add BookDetailScreen, CurrentlyReadingListScreen, DiscoverScreen
+- [x] Add ProgressDashboardScreen with XP levels
+- [x] Add SettingsScreen and ProfileScreen
+- [x] Add OnboardingFlowScreen
+- [x] Add EditProfileScreen
+- [x] Add MyCollectionsScreen
+- [x] Add UserCollectionDetailScreen
+- [x] Add AllNotesLibraryScreen
+- [x] Add OpenLibraryClient for API
+- [x] Add NetworkModule for Retrofit
+- [x] Add AmazonAffiliateLinkGenerator
+
+### 2026-02-15 (Session 1)
+- [x] Analyzed iOS codebase (60 files, ~13,600 LOC)
+- [x] Created conversion plan (ANDROID_CONVERSION_PLAN.md)
+- [x] Created checklist (this file)
+- [x] Initialize Android project structure
+- [x] Set up Gradle, Hilt, Room, Compose
+- [x] Implement theme colors from iOS Theme.swift
+- [x] Create HomeScreen with CurrentlyReadingCard (matching iOS)
+- [x] Set up bottom navigation
+- [x] Create data layer (entities, DAOs, database)
+- [x] Commit initial project setup
+- [x] Set up cron job for progress tracking (every hour)

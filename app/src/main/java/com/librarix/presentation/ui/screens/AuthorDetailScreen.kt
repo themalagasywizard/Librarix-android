@@ -20,7 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Share
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
@@ -118,7 +118,7 @@ fun AuthorDetailScreen(
                 ) {
                     Text(
                         text = authorName,
-                        fontWeight = FontWeight.Heavy,
+                        fontWeight = FontWeight.ExtraBold,
                         fontSize = 44.sp,
                         color = Color.White,
                         maxLines = 2
@@ -164,7 +164,7 @@ fun AuthorDetailScreen(
                             .background(Color.Black.copy(alpha = 0.35f))
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Share,
+                            imageVector = Icons.Default.Share,
                             contentDescription = "Share",
                             tint = Color.White
                         )

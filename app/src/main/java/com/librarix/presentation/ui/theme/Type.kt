@@ -90,7 +90,7 @@ val Typography = Typography(
     // Custom large display (for progress percentage)
     displayLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Heavy,
+        fontWeight = FontWeight.ExtraBold,
         fontSize = 64.sp,
         lineHeight = 72.sp
     )

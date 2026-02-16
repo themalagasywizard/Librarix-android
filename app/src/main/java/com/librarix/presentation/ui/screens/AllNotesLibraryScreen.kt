@@ -11,11 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ChevronRight
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,18 +35,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-data class NoteEntry(
-    val id: String,
-    val text: String,
-    val bookTitle: String,
-    val bookAuthor: String,
-    val createdAt: Long
-)
-
 @Composable
 fun AllNotesLibraryScreen(
-    notes: List<NoteEntry>,
-    onNoteClick: (NoteEntry) -> Unit,
+    notes: List<com.librarix.domain.model.NoteEntry>,
+    onNoteClick: (com.librarix.domain.model.NoteEntry) -> Unit,
     onBackClick: () -> Unit
 ) {
     Column(
@@ -94,7 +87,7 @@ fun AllNotesLibraryScreen(
                         note = note,
                         onClick = { onNoteClick(note) }
                     )
-                    HorizontalDivider(
+                    Divider(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         color = LxTextSecondary.copy(alpha = 0.1f)
                     )
@@ -106,7 +99,7 @@ fun AllNotesLibraryScreen(
 
 @Composable
 private fun NoteItem(
-    note: NoteEntry,
+    note: com.librarix.domain.model.NoteEntry,
     onClick: () -> Unit
 ) {
     val dateFormat = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault())
@@ -156,7 +149,7 @@ private fun NoteItem(
             Spacer(modifier = Modifier.weight(1f))
 
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ChevronRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = LxTextSecondary.copy(alpha = 0.5f),
                 modifier = Modifier.size(11.dp)

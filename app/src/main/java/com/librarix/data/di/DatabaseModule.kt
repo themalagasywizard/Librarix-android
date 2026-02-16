@@ -24,7 +24,7 @@ object DatabaseModule {
             context,
             LibrarixDatabase::class.java,
             "librarix_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

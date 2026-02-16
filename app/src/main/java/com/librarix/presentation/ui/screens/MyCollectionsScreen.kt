@@ -49,18 +49,11 @@ import com.librarix.presentation.ui.theme.LxPrimary
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
-data class UserCollection(
-    val id: String,
-    val name: String,
-    val bookCount: Int = 0,
-    val coverUrls: List<String> = emptyList()
-)
-
 @Composable
 fun MyCollectionsScreen(
-    collections: List<UserCollection> = emptyList(),
+    collections: List<com.librarix.domain.model.UserCollection> = emptyList(),
     onCreateCollection: (String) -> Unit,
-    onCollectionClick: (UserCollection) -> Unit
+    onCollectionClick: (com.librarix.domain.model.UserCollection) -> Unit
 ) {
     var newCollectionName by remember { mutableStateOf("") }
     var isCreating by remember { mutableStateOf(false) }
@@ -175,7 +168,7 @@ private fun EmptyState() {
 
 @Composable
 private fun CollectionCard(
-    collection: UserCollection,
+    collection: com.librarix.domain.model.UserCollection,
     onClick: () -> Unit
 ) {
     Card(
@@ -208,7 +201,7 @@ private fun CollectionCard(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = collection.name,
+                text = collection.title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = Color.Black,
@@ -216,7 +209,7 @@ private fun CollectionCard(
             )
 
             Text(
-                text = "${collection.bookCount} books",
+                text = "Collection",
                 fontWeight = FontWeight.Medium,
                 fontSize = 13.sp,
                 color = LxTextSecondary

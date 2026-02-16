@@ -24,11 +24,11 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.Flame
-import androidx.compose.material.icons.filled.Leaf
-import androidx.compose.material.icons.filled.Moon
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Eco
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Sparkles
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -77,19 +77,19 @@ fun EditProfileScreen(
     val symbols = listOf(
         "person.fill" to Icons.Default.Person,
         "book.fill" to Icons.Default.Book,
-        "sparkles" to Icons.Default.Sparkles,
-        "leaf.fill" to Icons.Default.Leaf,
-        "flame.fill" to Icons.Default.Flame,
-        "moon.stars.fill" to Icons.Default.Moon
+        "sparkles" to Icons.Default.AutoAwesome,
+        "leaf.fill" to Icons.Default.Eco,
+        "flame.fill" to Icons.Default.Favorite,
+        "moon.stars.fill" to Icons.Default.DarkMode
     )
 
     val colors = listOf(
-        0x1C4E5E, // Primary teal
-        0x3B82F6, // Blue
-        0x8B5CF6, // Purple
-        0x10B981, // Green
-        0xF59E0B, // Amber
-        0xEF4444  // Red
+        0x1C4E5EL, // Primary teal
+        0x3B82F6L, // Blue
+        0x8B5CF6L, // Purple
+        0x10B981L, // Green
+        0xF59E0BL, // Amber
+        0xEF4444L  // Red
     )
 
     Column(

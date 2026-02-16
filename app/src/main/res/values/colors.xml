@@ -26,6 +26,10 @@
     <color name="lxAuthorCardDark">#16161C</color>
     <color name="lxAuthorTextSecondary">#A6A6B0</color>
 
+    <!-- Launcher Icon -->
+    <color name="ic_launcher_background">#1C4E5E</color>
+    <color name="ic_launcher_foreground">#FFFFFF</color>
+
     <!-- Android Standard Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

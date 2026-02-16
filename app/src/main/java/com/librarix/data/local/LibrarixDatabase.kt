@@ -7,7 +7,7 @@ import com.librarix.data.local.entity.BookEntity
 
 @Database(
     entities = [BookEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class LibrarixDatabase : RoomDatabase() {

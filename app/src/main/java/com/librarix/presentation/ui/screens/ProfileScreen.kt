@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -48,7 +49,7 @@ import com.librarix.presentation.ui.theme.LxPrimary
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
-data class UserProfile(
+data class ProfileData(
     val name: String = "Reader",
     val avatarUrl: String? = null,
     val totalBooksRead: Int = 0,
@@ -59,7 +60,7 @@ data class UserProfile(
 
 @Composable
 fun ProfileScreen(
-    profile: UserProfile = UserProfile(),
+    profile: ProfileData = ProfileData(),
     onSettingsClick: () -> Unit,
     onEditProfile: () -> Unit = {}
 ) {
@@ -259,7 +260,7 @@ fun ProfileScreen(
                     onClick = { }
                 )
 
-                HorizontalDivider(color = LxBorderLight)
+                Divider(color = LxBorderLight)
 
                 ReadingListItem(
                     title = "Favorites",

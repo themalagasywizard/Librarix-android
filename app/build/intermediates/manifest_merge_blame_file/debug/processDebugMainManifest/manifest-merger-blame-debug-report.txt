@@ -1,0 +1,171 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.librarix"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:5:5-67
+11-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:5:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:6:5-79
+12-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:6:22-76
+13    <uses-permission android:name="android.permission.CAMERA" />
+13-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:7:5-65
+13-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:7:22-62
+14
+15    <uses-feature
+15-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:9:5-11:36
+16        android:name="android.hardware.camera"
+16-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:10:9-47
+17        android:required="false" />
+17-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:11:9-33
+18
+19    <permission
+19-->[androidx.core:core:1.12.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/8bcadfc9785106c6db026090039a7bc0/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+20        android:name="com.librarix.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+20-->[androidx.core:core:1.12.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/8bcadfc9785106c6db026090039a7bc0/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+21        android:protectionLevel="signature" />
+21-->[androidx.core:core:1.12.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/8bcadfc9785106c6db026090039a7bc0/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+22
+23    <uses-permission android:name="com.librarix.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+23-->[androidx.core:core:1.12.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/8bcadfc9785106c6db026090039a7bc0/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+23-->[androidx.core:core:1.12.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/8bcadfc9785106c6db026090039a7bc0/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+24
+25    <application
+25-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:13:5-33:19
+26        android:name="com.librarix.LibrarixApp"
+26-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:14:9-36
+27        android:allowBackup="true"
+27-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:15:9-35
+28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+28-->[androidx.core:core:1.12.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/8bcadfc9785106c6db026090039a7bc0/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
+29        android:dataExtractionRules="@xml/data_extraction_rules"
+29-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:16:9-65
+30        android:debuggable="true"
+31        android:extractNativeLibs="false"
+32        android:fullBackupContent="@xml/backup_rules"
+32-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:17:9-54
+33        android:icon="@mipmap/ic_launcher"
+33-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:18:9-43
+34        android:label="@string/app_name"
+34-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:19:9-41
+35        android:roundIcon="@mipmap/ic_launcher_round"
+35-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:20:9-54
+36        android:supportsRtl="true"
+36-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:21:9-35
+37        android:theme="@style/Theme.Librarix" >
+37-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:22:9-46
+38        <activity
+38-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:24:9-32:20
+39            android:name="com.librarix.presentation.ui.MainActivity"
+39-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:25:13-57
+40            android:exported="true"
+40-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:26:13-36
+41            android:theme="@style/Theme.Librarix" >
+41-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:27:13-50
+42            <intent-filter>
+42-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:28:13-31:29
+43                <action android:name="android.intent.action.MAIN" />
+43-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:29:17-69
+43-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:29:25-66
+44
+45                <category android:name="android.intent.category.LAUNCHER" />
+45-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:30:17-77
+45-->/Users/ryantrumble/Desktop/Librarix-android/app/src/main/AndroidManifest.xml:30:27-74
+46            </intent-filter>
+47        </activity>
+48        <activity
+48-->[androidx.compose.ui:ui-tooling-android:1.6.8] /Users/ryantrumble/.gradle/caches/8.13/transforms/437b4979747380181a3113801044725f/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+49            android:name="androidx.compose.ui.tooling.PreviewActivity"
+49-->[androidx.compose.ui:ui-tooling-android:1.6.8] /Users/ryantrumble/.gradle/caches/8.13/transforms/437b4979747380181a3113801044725f/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+50            android:exported="true" />
+50-->[androidx.compose.ui:ui-tooling-android:1.6.8] /Users/ryantrumble/.gradle/caches/8.13/transforms/437b4979747380181a3113801044725f/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+51        <activity
+51-->[androidx.compose.ui:ui-test-manifest:1.6.8] /Users/ryantrumble/.gradle/caches/8.13/transforms/b2b8426e7e1c1e348154d4b991750f53/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:23:9-25:39
+52            android:name="androidx.activity.ComponentActivity"
+52-->[androidx.compose.ui:ui-test-manifest:1.6.8] /Users/ryantrumble/.gradle/caches/8.13/transforms/b2b8426e7e1c1e348154d4b991750f53/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:24:13-63
+53            android:exported="true" />
+53-->[androidx.compose.ui:ui-test-manifest:1.6.8] /Users/ryantrumble/.gradle/caches/8.13/transforms/b2b8426e7e1c1e348154d4b991750f53/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:25:13-36
+54
+55        <provider
+55-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+56            android:name="androidx.startup.InitializationProvider"
+56-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+57            android:authorities="com.librarix.androidx-startup"
+57-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+58            android:exported="false" >
+58-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+59            <meta-data
+59-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+60                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+60-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+61                android:value="androidx.startup" />
+61-->[androidx.emoji2:emoji2:1.3.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/6c10d25491ad4948007ebbc5e6a0398f/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+62            <meta-data
+62-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/42eb645818621fd527b2676522fb9972/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+63                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+63-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/42eb645818621fd527b2676522fb9972/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+64                android:value="androidx.startup" />
+64-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/ryantrumble/.gradle/caches/8.13/transforms/42eb645818621fd527b2676522fb9972/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+65            <meta-data
+65-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+66                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+66-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+67                android:value="androidx.startup" />
+67-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+68        </provider>
+69
+70        <service
+70-->[androidx.room:room-runtime:2.6.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/82583b304e7946e68413f451ec134ef3/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
+71            android:name="androidx.room.MultiInstanceInvalidationService"
+71-->[androidx.room:room-runtime:2.6.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/82583b304e7946e68413f451ec134ef3/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
+72            android:directBootAware="true"
+72-->[androidx.room:room-runtime:2.6.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/82583b304e7946e68413f451ec134ef3/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
+73            android:exported="false" />
+73-->[androidx.room:room-runtime:2.6.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/82583b304e7946e68413f451ec134ef3/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
+74
+75        <receiver
+75-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+76            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+76-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+77            android:directBootAware="false"
+77-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+78            android:enabled="true"
+78-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+79            android:exported="true"
+79-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+80            android:permission="android.permission.DUMP" >
+80-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+81            <intent-filter>
+81-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+82                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+82-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+82-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+83            </intent-filter>
+84            <intent-filter>
+84-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+85                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+85-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+85-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+86            </intent-filter>
+87            <intent-filter>
+87-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+88                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+88-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+88-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+89            </intent-filter>
+90            <intent-filter>
+90-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+91                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+91-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+91-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/ryantrumble/.gradle/caches/8.13/transforms/e7608102db46f2a091678d13260bdd0e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+92            </intent-filter>
+93        </receiver>
+94    </application>
+95
+96</manifest>

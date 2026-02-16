@@ -41,10 +41,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.isSystemInDarkTheme
 import coil.compose.AsyncImage
+import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.SavedBook
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -65,14 +69,17 @@ fun UpdateProgressView(
     }
     var showingNote by remember { mutableStateOf(false) }
 
+    val isDark = isSystemInDarkTheme()
+    val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
+    val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
+    val textColor = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
     val maxPages = maxOf(book.pageCount ?: 0, 1)
     val currentPage = currentPageText.toIntOrNull() ?: 0
-    val progress = if (maxPages > 0) currentPage.toFloat() / maxPages else 0f
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(backgroundColor)
             .padding(horizontal = 18.dp)
             .padding(top = 14.dp, bottom = 18.dp)
     ) {
@@ -99,7 +106,7 @@ fun UpdateProgressView(
                     fontSize = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black
+                    color = textColor
                 )
                 Text(
                     text = book.author,
@@ -115,7 +122,7 @@ fun UpdateProgressView(
         // Progress core
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+            colors = CardDefaults.cardColors(containerColor = surfaceColor),
             shape = RoundedCornerShape(20.dp)
         ) {
             Column(
@@ -144,9 +151,9 @@ fun UpdateProgressView(
                     },
                     modifier = Modifier.width(120.dp),
                     textStyle = androidx.compose.ui.text.TextStyle(
-                        fontWeight = FontWeight.Heavy,
+                        fontWeight = FontWeight.ExtraBold,
                         fontSize = 64.sp,
-                        color = Color.Black
+                        color = textColor
                     ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
@@ -210,7 +217,7 @@ fun UpdateProgressView(
                         .fillMaxWidth()
                         .height(42.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(LxSurfaceLight),
+                        .background(surfaceColor),
                     placeholder = {
                         Text(
                             "How was this session?",
@@ -233,11 +240,29 @@ fun UpdateProgressView(
         // Save button
         Button(
             onClick = {
+                val oldPercent = if (book.pageCount != null && book.pageCount > 0) {
+                    ((book.currentPage ?: 0).toDouble() / book.pageCount * 100).toInt()
+                } else {
+                    ((book.progressFraction ?: 0.0) * 100).toInt()
+                }
+                val newPercent = (currentPage.toDouble() / maxPages * 100).toInt()
+                val isComplete = book.pageCount != null && book.pageCount > 0 && currentPage >= book.pageCount
+
                 val updated = book.copy(
                     currentPage = currentPage,
                     lastSessionNotes = note.ifBlank { null },
                     lastProgressUpdate = System.currentTimeMillis(),
-                    progressFraction = null
+                    lastProgressDeltaPercent = (newPercent - oldPercent).coerceIn(-100, 100),
+                    progressFraction = null,
+                    status = when {
+                        isComplete -> BookStatus.FINISHED
+                        book.status != BookStatus.FINISHED -> book.status
+                        else -> BookStatus.READING
+                    },
+                    finishedDate = when {
+                        isComplete -> book.finishedDate ?: System.currentTimeMillis()
+                        else -> null
+                    }
                 )
                 onSave(updated)
                 onDismiss()

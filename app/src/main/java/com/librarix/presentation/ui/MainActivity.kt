@@ -4,50 +4,72 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.MenuBook
-import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.librarix.data.remote.OpenLibraryDoc
+import com.librarix.data.remote.OpenLibrarySubjectWork
+import com.librarix.data.remote.TrendingBookData
 import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.SavedBook
+import com.librarix.presentation.ui.screens.AddBookScreen
 import com.librarix.presentation.ui.screens.BookDetailScreen
-import com.librarix.presentation.ui.screens.CurrentlyReadingListScreen
+import com.librarix.presentation.ui.screens.DiscoverBookDetail
+import com.librarix.presentation.ui.screens.DiscoverBookDetailScreen
 import com.librarix.presentation.ui.screens.DiscoverScreen
 import com.librarix.presentation.ui.screens.HomeScreen
 import com.librarix.presentation.ui.screens.LibraryScreen
-import com.librarix.presentation.ui.screens.ProfileScreen
+import com.librarix.presentation.ui.screens.SettingsScreen
 import com.librarix.presentation.ui.screens.UpdateProgressView
 import com.librarix.presentation.ui.theme.LibrarixTheme
+import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
+import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
+import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
-import com.librarix.presentation.ui.theme.LxTextSecondary
+import com.librarix.presentation.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -63,63 +85,46 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-sealed class Screen(
-    val route: String,
+enum class AppTab(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
-    data object Home : Screen("home", "Home", Icons.Filled.Home, Icons.Outlined.Home)
-    data object Discover : Screen("discover", "Discover", Icons.Filled.Explore, Icons.Outlined.Explore)
-    data object Library : Screen("library", "Library", Icons.AutoMirrored.Filled.MenuBook, Icons.Outlined.MenuBook)
-    data object Profile : Screen("profile", "Profile", Icons.Filled.Person, Icons.Outlined.Person)
-    data object CurrentlyReadingList : Screen("currently_reading_list", "Reading", Icons.Filled.Home, Icons.Outlined.Home)
-    data object BookDetail : Screen("book_detail/{bookId}", "Book", Icons.Filled.Home, Icons.Outlined.Home) {
-        fun createRoute(bookId: String) = "book_detail/$bookId"
-    }
-    data object UpdateProgress : Screen("update_progress/{bookId}", "Progress", Icons.Filled.Home, Icons.Outlined.Home) {
-        fun createRoute(bookId: String) = "update_progress/$bookId"
-    }
+    HOME("Home", Icons.Filled.Home, Icons.Outlined.Home),
+    LIBRARY("Library", Icons.AutoMirrored.Filled.MenuBook, Icons.Outlined.MenuBook),
+    DISCOVER("Discover", Icons.Filled.Search, Icons.Outlined.Search),
+    SETTINGS("Settings", Icons.Filled.Settings, Icons.Outlined.Settings)
 }
-
-val bottomNavItems = listOf(Screen.Home, Screen.Discover, Screen.Library, Screen.Profile)
 
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController()
+    var selectedTab by remember { mutableStateOf(AppTab.HOME) }
     var currentBook by remember { mutableStateOf<SavedBook?>(null) }
     var showProgressSheet by remember { mutableStateOf(false) }
     var showBookDetail by remember { mutableStateOf(false) }
+    var showAddBook by remember { mutableStateOf(false) }
+    var discoverBookDetail by remember { mutableStateOf<DiscoverBookDetail?>(null) }
+    var showDiscoverDetail by remember { mutableStateOf(false) }
+
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val homeState by homeViewModel.uiState.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
-
-            // Hide bottom nav on detail screens
-            val showBottomNav = currentDestination?.route in listOf(
-                Screen.Home.route,
-                Screen.Discover.route,
-                Screen.Library.route,
-                Screen.Profile.route
-            )
-
-            if (showBottomNav) {
-                BottomNavigationBar(navController = navController)
+            if (!showBookDetail && !showProgressSheet && !showAddBook && !showDiscoverDetail) {
+                LibrarixBottomNavBar(
+                    selectedTab = selectedTab,
+                    onTabSelected = { selectedTab = it },
+                    onAddClick = { showAddBook = true }
+                )
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Home.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(Screen.Home.route) {
-                HomeScreen(
-                    onViewAllClick = {
-                        navController.navigate(Screen.CurrentlyReadingList.route)
-                    },
+        Box(modifier = Modifier.padding(innerPadding)) {
+            when (selectedTab) {
+                AppTab.HOME -> HomeScreen(
+                    onViewAllClick = { },
                     onBookClick = { book ->
                         currentBook = book
                         showBookDetail = true
@@ -129,41 +134,59 @@ fun MainScreen() {
                         showProgressSheet = true
                     }
                 )
-            }
-
-            composable(Screen.Discover.route) {
-                DiscoverScreen(
+                AppTab.LIBRARY -> LibraryScreen(
+                    books = homeState.allBooks,
                     onBookClick = { book ->
                         currentBook = book
                         showBookDetail = true
                     }
                 )
-            }
-
-            composable(Screen.Library.route) {
-                LibraryScreen(
-                    books = emptyList(), // TODO: Load from ViewModel
-                    onBookClick = { book ->
-                        currentBook = book
-                        showBookDetail = true
+                AppTab.DISCOVER -> DiscoverScreen(
+                    onBookClick = { bookAny ->
+                        val detail = when (bookAny) {
+                            is TrendingBookData -> DiscoverBookDetail(
+                                key = bookAny.isbn,
+                                title = bookAny.displayTitle,
+                                author = bookAny.displayAuthor,
+                                coverUrl = bookAny.coverURL,
+                                firstPublishYear = null,
+                                synopsis = bookAny.synopsis ?: bookAny.metadata?.description ?: "",
+                                pageCount = bookAny.pageCount,
+                                subjects = bookAny.metadata?.categories,
+                                isbns = listOf(bookAny.isbn)
+                            )
+                            is OpenLibraryDoc -> DiscoverBookDetail(
+                                key = bookAny.key,
+                                title = bookAny.displayTitle,
+                                author = bookAny.displayAuthor,
+                                coverUrl = bookAny.coverUrl("L"),
+                                firstPublishYear = bookAny.firstPublishYear,
+                                synopsis = "",
+                                pageCount = bookAny.numberOfPagesMedian,
+                                subjects = null,
+                                isbns = bookAny.isbn
+                            )
+                            is OpenLibrarySubjectWork -> DiscoverBookDetail(
+                                key = bookAny.key,
+                                title = bookAny.displayTitle,
+                                author = bookAny.displayAuthor,
+                                coverUrl = bookAny.coverUrl("L"),
+                                firstPublishYear = bookAny.firstPublishYear,
+                                synopsis = "",
+                                pageCount = null,
+                                subjects = null,
+                                isbns = null
+                            )
+                            else -> null
+                        }
+                        if (detail != null) {
+                            discoverBookDetail = detail
+                            showDiscoverDetail = true
+                        }
                     }
                 )
-            }
-
-            composable(Screen.Profile.route) {
-                ProfileScreen(
-                    onSettingsClick = { }
-                )
-            }
-
-            composable(Screen.CurrentlyReadingList.route) {
-                CurrentlyReadingListScreen(
-                    books = emptyList(), // TODO: Load from ViewModel
-                    onBookClick = { book ->
-                        currentBook = book
-                        showProgressSheet = true
-                    },
-                    onDismiss = { navController.popBackStack() }
+                AppTab.SETTINGS -> SettingsScreen(
+                    onNavigateBack = { }
                 )
             }
         }
@@ -179,7 +202,9 @@ fun MainScreen() {
                 },
                 onAddToCollection = { },
                 onEditBook = { },
-                onDeleteBook = { },
+                onDeleteBook = {
+                    showBookDetail = false
+                },
                 onShare = { }
             )
         }
@@ -189,50 +214,186 @@ fun MainScreen() {
             UpdateProgressView(
                 book = currentBook!!,
                 onSave = { updatedBook ->
-                    // TODO: Save to repository
                     showProgressSheet = false
                 },
                 onDismiss = { showProgressSheet = false }
+            )
+        }
+
+        // Add book overlay
+        if (showAddBook) {
+            AddBookScreen(
+                onDismiss = { showAddBook = false },
+                onBookAdded = { showAddBook = false }
+            )
+        }
+
+        // Discover book detail overlay
+        if (showDiscoverDetail && discoverBookDetail != null) {
+            val detail = discoverBookDetail!!
+            val isSaved = homeState.allBooks.any { saved ->
+                (detail.isbns?.any { isbn -> isbn == saved.isbn } == true) ||
+                    (detail.key == saved.openLibraryWorkKey) ||
+                    (detail.title.equals(saved.title, ignoreCase = true) && detail.author.equals(saved.author, ignoreCase = true))
+            }
+            DiscoverBookDetailScreen(
+                book = detail,
+                isSaved = isSaved,
+                onBackClick = { showDiscoverDetail = false },
+                onSaveToLibrary = {
+                    if (!isSaved) {
+                        val savedBook = SavedBook(
+                            id = java.util.UUID.randomUUID().toString(),
+                            title = detail.title,
+                            author = detail.author,
+                            description = detail.synopsis.ifBlank { null },
+                            coverURLString = detail.coverUrl,
+                            pageCount = detail.pageCount,
+                            currentPage = 0,
+                            status = BookStatus.WANT_TO_READ,
+                            isbn = detail.isbns?.firstOrNull(),
+                            openLibraryWorkKey = detail.key,
+                            addedDate = System.currentTimeMillis()
+                        )
+                        homeViewModel.addBook(savedBook)
+                    }
+                },
+                onShare = { }
             )
         }
     }
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+fun LibrarixBottomNavBar(
+    selectedTab: AppTab,
+    onTabSelected: (AppTab) -> Unit,
+    onAddClick: () -> Unit
+) {
+    val isDark = isSystemInDarkTheme()
+    val backgroundColor = if (isDark) LxBackgroundDark else Color.White
+    val borderColor = if (isDark) LxBorderDark else LxBorderLight
+    val inactiveColor = if (isDark) Color.White.copy(alpha = 0.40f) else Color.Black.copy(alpha = 0.35f)
 
-    NavigationBar {
-        bottomNavItems.forEach { screen ->
-            val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(88.dp)
+    ) {
+        // Top border
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(borderColor)
+                .align(Alignment.TopCenter)
+        )
 
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
-                        contentDescription = screen.title
-                    )
-                },
-                label = { Text(screen.title) },
-                selected = selected,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = LxPrimary,
-                    selectedTextColor = LxPrimary,
-                    unselectedIconColor = LxTextSecondary,
-                    unselectedTextColor = LxTextSecondary,
-                    indicatorColor = LxPrimary.copy(alpha = 0.1f)
-                )
+        // Nav bar background and items
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(88.dp)
+                .background(backgroundColor)
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Home
+            NavBarItem(
+                tab = AppTab.HOME,
+                isSelected = selectedTab == AppTab.HOME,
+                activeColor = LxPrimary,
+                inactiveColor = inactiveColor,
+                onClick = { onTabSelected(AppTab.HOME) },
+                modifier = Modifier.weight(1f)
+            )
+            // Library
+            NavBarItem(
+                tab = AppTab.LIBRARY,
+                isSelected = selectedTab == AppTab.LIBRARY,
+                activeColor = LxPrimary,
+                inactiveColor = inactiveColor,
+                onClick = { onTabSelected(AppTab.LIBRARY) },
+                modifier = Modifier.weight(1f)
+            )
+            // Discover
+            NavBarItem(
+                tab = AppTab.DISCOVER,
+                isSelected = selectedTab == AppTab.DISCOVER,
+                activeColor = LxPrimary,
+                inactiveColor = inactiveColor,
+                onClick = { onTabSelected(AppTab.DISCOVER) },
+                modifier = Modifier.weight(1f)
+            )
+            // Settings
+            NavBarItem(
+                tab = AppTab.SETTINGS,
+                isSelected = selectedTab == AppTab.SETTINGS,
+                activeColor = LxPrimary,
+                inactiveColor = inactiveColor,
+                onClick = { onTabSelected(AppTab.SETTINGS) },
+                modifier = Modifier.weight(1f)
             )
         }
+
+        // Floating "+" button
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-28).dp)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = CircleShape,
+                    ambientColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.18f),
+                    spotColor = Color.Black.copy(alpha = if (isDark) 0.40f else 0.18f)
+                )
+                .size(56.dp)
+                .clip(CircleShape)
+                .background(LxPrimary)
+                .clickable { onAddClick() },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add Book",
+                tint = Color.White,
+                modifier = Modifier.size(22.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun NavBarItem(
+    tab: AppTab,
+    isSelected: Boolean,
+    activeColor: Color,
+    inactiveColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val color = if (isSelected) activeColor else inactiveColor
+    val icon = if (isSelected) tab.selectedIcon else tab.unselectedIcon
+
+    Column(
+        modifier = modifier
+            .clickable { onClick() }
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = tab.title,
+            tint = color,
+            modifier = Modifier.size(22.dp)
+        )
+        Text(
+            text = tab.title,
+            color = color,
+            fontSize = 10.sp,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+        )
     }
 }

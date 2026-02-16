@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CapsuleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -241,11 +240,11 @@ fun ReadingBookRowItem(
 
                 // Progress bar
                 LinearProgressIndicator(
-                    progress = { progress.toFloat() },
+                    progress = progress.toFloat(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp)
-                        .clip(CapsuleShape),
+                        .clip(RoundedCornerShape(50)),
                     color = LxPrimary,
                     trackColor = LxBorderLight
                 )

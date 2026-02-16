@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -271,12 +272,12 @@ private fun DiscoverHeader(
         )
     }
 
-    // Bottom border line
+    // Bottom border line (matches iOS: black.opacity(0.06) light mode)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(LxBorderLight)
+            .background(Color.Black.copy(alpha = 0.06f))
     )
 }
 
@@ -420,54 +421,60 @@ private fun HeroRecommendationCard(
 
                 // Text content
                 Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "BOOK OF THE WEEK",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = LxPrimary,
-                        letterSpacing = 1.4.sp
-                    )
-
-                    Text(
-                        text = pickOfTheWeek.displayTitle,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Text(
-                        text = "by ${pickOfTheWeek.displayAuthor}",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = LxTextSecondary
-                    )
-
-                    // Reason chip
-                    val reasonText = pickOfTheWeek.reason?.takeIf { it.isNotEmpty() }
-                        ?: "Because you read The Alchemist"
-                    Row(
-                        modifier = Modifier
-                            .background(
-                                Color.White.copy(alpha = 0.05f),
-                                RoundedCornerShape(10.dp)
-                            )
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
-                            text = reasonText,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color.White.copy(alpha = 0.75f),
+                            text = "BOOK OF THE WEEK",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LxPrimary,
+                            letterSpacing = 1.4.sp
+                        )
+
+                        Text(
+                            text = pickOfTheWeek.displayTitle,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
+
+                        Text(
+                            text = "by ${pickOfTheWeek.displayAuthor}",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = LxTextSecondary
+                        )
+
+                        // Reason chip
+                        val reasonText = pickOfTheWeek.reason?.takeIf { it.isNotEmpty() }
+                            ?: "Because you read The Alchemist"
+                        Row(
+                            modifier = Modifier
+                                .background(
+                                    Color.White.copy(alpha = 0.05f),
+                                    RoundedCornerShape(10.dp)
+                                )
+                                .padding(horizontal = 10.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = reasonText,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White.copy(alpha = 0.75f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
 
                     // View Details button

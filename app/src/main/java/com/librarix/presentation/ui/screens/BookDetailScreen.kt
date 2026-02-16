@@ -8,6 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,13 +35,10 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -69,9 +67,12 @@ import com.librarix.domain.model.BookNote
 import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.SavedBook
 import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 import java.net.URLEncoder
@@ -87,18 +88,30 @@ fun BookDetailScreen(
     onAddToCollection: () -> Unit,
     onEditBook: () -> Unit,
     onDeleteBook: () -> Unit,
+    onStatusChange: (BookStatus) -> Unit,
+    onRatingChange: (Double) -> Unit,
+    onToggleFavorite: () -> Unit,
     onShare: () -> Unit
 ) {
+    val isDark = isSystemInDarkTheme()
+    val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
+    val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
+    val borderColor = if (isDark) LxBorderDark else LxBorderLight
+    val primaryText = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
+    val secondaryText = if (isDark) Color.White.copy(alpha = 0.55f) else Color.Black.copy(alpha = 0.45f)
+    val bodyText = if (isDark) Color.White.copy(alpha = 0.75f) else Color.Black.copy(alpha = 0.70f)
+
     var showMenu by remember { mutableStateOf(false) }
     var synopsisExpanded by remember { mutableStateOf(false) }
     var userRating by remember { mutableDoubleStateOf(book.rating ?: 0.0) }
     var isBookmarked by remember { mutableStateOf(book.isFavorite) }
+    var currentStatus by remember { mutableStateOf(book.status) }
     val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(backgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -106,12 +119,12 @@ fun BookDetailScreen(
                 .verticalScroll(scrollState)
         ) {
             // Hero section with blurred backdrop
-            HeroSection(book = book)
+            HeroSection(book = book, status = currentStatus, isDark = isDark, backgroundColor = backgroundColor)
 
             Spacer(modifier = Modifier.height(18.dp))
 
             // Title and meta
-            TitleAndMeta(book = book)
+            TitleAndMeta(book = book, primaryText = primaryText)
 
             Spacer(modifier = Modifier.height(18.dp))
 
@@ -125,6 +138,15 @@ fun BookDetailScreen(
                 // Actions bar
                 ActionsBar(
                     book = book,
+                    currentStatus = currentStatus,
+                    isDark = isDark,
+                    surfaceColor = surfaceColor,
+                    borderColor = borderColor,
+                    secondaryText = secondaryText,
+                    onStatusChange = { status ->
+                        currentStatus = status
+                        onStatusChange(status)
+                    },
                     onUpdateProgress = onUpdateProgress,
                     onAddToCollection = onAddToCollection
                 )
@@ -132,8 +154,17 @@ fun BookDetailScreen(
                 // User rating card
                 UserRatingCard(
                     rating = userRating,
-                    onRatingChange = { userRating = it },
-                    onClearRating = { userRating = 0.0 }
+                    isDark = isDark,
+                    surfaceColor = surfaceColor,
+                    borderColor = borderColor,
+                    onRatingChange = {
+                        userRating = it
+                        onRatingChange(it)
+                    },
+                    onClearRating = {
+                        userRating = 0.0
+                        onRatingChange(0.0)
+                    }
                 )
 
                 // Synopsis card
@@ -141,20 +172,35 @@ fun BookDetailScreen(
                     synopsis = book.description?.trim()?.ifEmpty { null }
                         ?: "No synopsis available yet.",
                     expanded = synopsisExpanded,
-                    onToggleExpanded = { synopsisExpanded = !synopsisExpanded }
+                    onToggleExpanded = { synopsisExpanded = !synopsisExpanded },
+                    isDark = isDark,
+                    surfaceColor = surfaceColor,
+                    borderColor = borderColor,
+                    bodyText = bodyText
                 )
 
                 // Notes card
                 NotesCard(
                     notes = book.notes ?: emptyList(),
-                    onAddNote = { /* Add note action */ },
-                    onViewAllNotes = { /* View all notes action */ }
+                    onAddNote = { },
+                    onViewAllNotes = { },
+                    isDark = isDark,
+                    surfaceColor = surfaceColor,
+                    borderColor = borderColor,
+                    primaryText = primaryText,
+                    bodyText = bodyText,
+                    backgroundColor = backgroundColor
                 )
 
                 // Author mini card
                 AuthorMiniCard(
                     authorName = book.author,
-                    onViewProfile = { /* Navigate to author detail */ }
+                    onViewProfile = { },
+                    isDark = isDark,
+                    surfaceColor = surfaceColor,
+                    borderColor = borderColor,
+                    primaryText = primaryText,
+                    secondaryText = secondaryText
                 )
             }
 
@@ -165,7 +211,10 @@ fun BookDetailScreen(
         TopNavBar(
             onBackClick = onBackClick,
             isBookmarked = isBookmarked,
-            onToggleBookmark = { isBookmarked = !isBookmarked },
+            onToggleBookmark = {
+                isBookmarked = !isBookmarked
+                onToggleFavorite()
+            },
             onShare = onShare,
             showMenu = showMenu,
             onShowMenu = { showMenu = it },
@@ -176,7 +225,10 @@ fun BookDetailScreen(
             onDeleteBook = {
                 showMenu = false
                 onDeleteBook()
-            }
+            },
+            isDark = isDark,
+            backgroundColor = backgroundColor,
+            primaryText = primaryText
         )
     }
 }
@@ -184,7 +236,12 @@ fun BookDetailScreen(
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
 @Composable
-private fun HeroSection(book: SavedBook) {
+private fun HeroSection(
+    book: SavedBook,
+    status: BookStatus,
+    isDark: Boolean,
+    backgroundColor: Color
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,7 +254,7 @@ private fun HeroSection(book: SavedBook) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .alpha(0.30f)
+                .alpha(if (isDark) 0.20f else 0.30f)
                 .blur(radius = 30.dp)
                 .scale(1.15f),
             contentScale = ContentScale.Crop
@@ -212,8 +269,8 @@ private fun HeroSection(book: SavedBook) {
                     Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            LxBackgroundLight.copy(alpha = 0.55f),
-                            LxBackgroundLight
+                            backgroundColor.copy(alpha = 0.55f),
+                            backgroundColor
                         )
                     )
                 )
@@ -248,7 +305,7 @@ private fun HeroSection(book: SavedBook) {
 
                 // Status badge overlaid on cover
                 StatusBadge(
-                    status = book.status,
+                    status = status,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = 10.dp, y = (-10).dp)
@@ -265,7 +322,7 @@ private fun StatusBadge(status: BookStatus, modifier: Modifier = Modifier) {
         fontWeight = FontWeight.Bold,
         fontSize = 11.sp,
         letterSpacing = 1.sp,
-        color = Color(0xFF1E2B34), // LxSurfaceDark
+        color = Color(0xFF1E2B34),
         modifier = modifier
             .shadow(
                 elevation = 8.dp,
@@ -283,7 +340,7 @@ private fun StatusBadge(status: BookStatus, modifier: Modifier = Modifier) {
 // ─── Title and Meta ──────────────────────────────────────────────────────────
 
 @Composable
-private fun TitleAndMeta(book: SavedBook) {
+private fun TitleAndMeta(book: SavedBook, primaryText: Color) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -295,7 +352,7 @@ private fun TitleAndMeta(book: SavedBook) {
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp,
             textAlign = TextAlign.Center,
-            color = Color.Black.copy(alpha = 0.92f),
+            color = primaryText,
             modifier = Modifier.padding(horizontal = 18.dp)
         )
 
@@ -306,19 +363,18 @@ private fun TitleAndMeta(book: SavedBook) {
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 18.dp)
         ) {
-            // Tappable author name
             Text(
                 text = book.author,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
                 color = LxPrimary,
-                modifier = Modifier.clickable { /* Navigate to AuthorDetail */ }
+                modifier = Modifier.clickable { }
             )
 
             Bullet()
 
             Text(
-                text = "\u2014", // em-dash
+                text = "\u2014",
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
                 color = LxTextSecondary
@@ -354,6 +410,12 @@ private fun Bullet() {
 @Composable
 private fun ActionsBar(
     book: SavedBook,
+    currentStatus: BookStatus,
+    isDark: Boolean,
+    surfaceColor: Color,
+    borderColor: Color,
+    secondaryText: Color,
+    onStatusChange: (BookStatus) -> Unit,
     onUpdateProgress: () -> Unit,
     onAddToCollection: () -> Unit
 ) {
@@ -385,7 +447,10 @@ private fun ActionsBar(
                         )
                     }
                 },
-                title = book.status.displayTitle,
+                title = currentStatus.displayTitle,
+                surfaceColor = surfaceColor,
+                borderColor = borderColor,
+                secondaryText = secondaryText,
                 onClick = { statusMenuExpanded = true }
             )
 
@@ -401,14 +466,14 @@ private fun ActionsBar(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(status.displayTitle)
-                                if (book.status == status) {
+                                if (currentStatus == status) {
                                     Text("\u2713", color = LxPrimary)
                                 }
                             }
                         },
                         onClick = {
                             statusMenuExpanded = false
-                            onUpdateProgress()
+                            onStatusChange(status)
                         }
                     )
                 }
@@ -422,19 +487,22 @@ private fun ActionsBar(
                     modifier = Modifier
                         .size(34.dp)
                         .background(
-                            color = LxTextSecondary.copy(alpha = 0.10f),
+                            color = secondaryText.copy(alpha = 0.10f),
                             shape = CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "\uD83D\uDC5C", // bag emoji fallback
+                        text = "\uD83D\uDED2",
                         fontSize = 16.sp
                     )
                 }
             },
             title = "Buy",
             modifier = Modifier.weight(1f),
+            surfaceColor = surfaceColor,
+            borderColor = borderColor,
+            secondaryText = secondaryText,
             onClick = {
                 val query = URLEncoder.encode(
                     "${book.title} ${book.author}",
@@ -453,7 +521,7 @@ private fun ActionsBar(
                     modifier = Modifier
                         .size(34.dp)
                         .background(
-                            color = LxTextSecondary.copy(alpha = 0.10f),
+                            color = secondaryText.copy(alpha = 0.10f),
                             shape = CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -461,13 +529,16 @@ private fun ActionsBar(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = null,
-                        tint = LxTextSecondary,
+                        tint = if (isDark) Color.White.copy(alpha = 0.55f) else LxTextSecondary,
                         modifier = Modifier.size(18.dp)
                     )
                 }
             },
             title = "Collection",
             modifier = Modifier.weight(1f),
+            surfaceColor = surfaceColor,
+            borderColor = borderColor,
+            secondaryText = secondaryText,
             onClick = onAddToCollection
         )
     }
@@ -478,13 +549,16 @@ private fun ActionPill(
     icon: @Composable () -> Unit,
     title: String,
     modifier: Modifier = Modifier,
+    surfaceColor: Color,
+    borderColor: Color,
+    secondaryText: Color,
     onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
-            .background(LxSurfaceLight)
-            .border(1.dp, LxBorderLight, RoundedCornerShape(18.dp))
+            .background(surfaceColor)
+            .border(1.dp, borderColor, RoundedCornerShape(18.dp))
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -496,7 +570,7 @@ private fun ActionPill(
             text = title,
             fontWeight = FontWeight.SemiBold,
             fontSize = 12.sp,
-            color = Color.Black.copy(alpha = 0.62f),
+            color = secondaryText,
             textAlign = TextAlign.Center,
             maxLines = 2
         )
@@ -508,10 +582,13 @@ private fun ActionPill(
 @Composable
 private fun UserRatingCard(
     rating: Double,
+    isDark: Boolean,
+    surfaceColor: Color,
+    borderColor: Color,
     onRatingChange: (Double) -> Unit,
     onClearRating: () -> Unit
 ) {
-    CardContainer {
+    CardContainer(surfaceColor = surfaceColor, borderColor = borderColor) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -585,9 +662,13 @@ private fun UserRatingCard(
 private fun SynopsisCard(
     synopsis: String,
     expanded: Boolean,
-    onToggleExpanded: () -> Unit
+    onToggleExpanded: () -> Unit,
+    isDark: Boolean,
+    surfaceColor: Color,
+    borderColor: Color,
+    bodyText: Color
 ) {
-    CardContainer {
+    CardContainer(surfaceColor = surfaceColor, borderColor = borderColor) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -605,7 +686,7 @@ private fun SynopsisCard(
             Text(
                 text = synopsis,
                 fontSize = 15.sp,
-                color = Color.Black.copy(alpha = 0.70f),
+                color = bodyText,
                 maxLines = if (expanded) Int.MAX_VALUE else 4,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
@@ -618,7 +699,6 @@ private fun SynopsisCard(
                     .clickable(onClick = onToggleExpanded)
             )
 
-            // Expand/collapse chevron
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -646,13 +726,19 @@ private fun SynopsisCard(
 private fun NotesCard(
     notes: List<BookNote>,
     onAddNote: () -> Unit,
-    onViewAllNotes: () -> Unit
+    onViewAllNotes: () -> Unit,
+    isDark: Boolean,
+    surfaceColor: Color,
+    borderColor: Color,
+    primaryText: Color,
+    bodyText: Color,
+    backgroundColor: Color
 ) {
     val dateFormat = remember {
         SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
     }
 
-    CardContainer {
+    CardContainer(surfaceColor = surfaceColor, borderColor = borderColor) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -685,7 +771,6 @@ private fun NotesCard(
                         modifier = Modifier.clickable(onClick = onViewAllNotes)
                     )
 
-                    // Add note button
                     Box(
                         modifier = Modifier
                             .size(32.dp)
@@ -708,12 +793,11 @@ private fun NotesCard(
 
             // Notes preview
             if (notes.isEmpty()) {
-                // Empty state
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(14.dp))
-                        .background(LxBackgroundLight)
+                        .background(backgroundColor)
                         .clickable(onClick = onAddNote)
                         .padding(14.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -741,7 +825,7 @@ private fun NotesCard(
                             text = "No notes yet",
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
-                            color = Color.Black.copy(alpha = 0.92f)
+                            color = primaryText
                         )
                         Text(
                             text = "Tap + to add your first note.",
@@ -752,12 +836,11 @@ private fun NotesCard(
                     }
                 }
             } else {
-                // Show up to 2 most recent notes
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(14.dp))
-                        .background(LxBackgroundLight)
+                        .background(backgroundColor)
                         .clickable(onClick = onViewAllNotes)
                         .padding(14.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -770,7 +853,7 @@ private fun NotesCard(
                             Text(
                                 text = note.text,
                                 fontSize = 13.sp,
-                                color = Color.Black.copy(alpha = 0.72f),
+                                color = bodyText,
                                 maxLines = 3,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -783,7 +866,7 @@ private fun NotesCard(
                         }
 
                         if (index < previewNotes.size - 1) {
-                            Divider(
+                            HorizontalDivider(
                                 modifier = Modifier.alpha(0.35f)
                             )
                         }
@@ -808,9 +891,14 @@ private fun NotesCard(
 @Composable
 private fun AuthorMiniCard(
     authorName: String,
-    onViewProfile: () -> Unit
+    onViewProfile: () -> Unit,
+    isDark: Boolean,
+    surfaceColor: Color,
+    borderColor: Color,
+    primaryText: Color,
+    secondaryText: Color
 ) {
-    CardContainer {
+    CardContainer(surfaceColor = surfaceColor, borderColor = borderColor) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -818,15 +906,14 @@ private fun AuthorMiniCard(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Author avatar placeholder
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .background(
-                        color = Color.Black.copy(alpha = 0.08f),
+                        color = if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.08f),
                         shape = CircleShape
                     )
-                    .border(2.dp, LxBorderLight, CircleShape),
+                    .border(2.dp, borderColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -845,7 +932,7 @@ private fun AuthorMiniCard(
                     text = authorName,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    color = Color.Black.copy(alpha = 0.92f)
+                    color = primaryText
                 )
                 Text(
                     text = "Author",
@@ -874,14 +961,16 @@ private fun AuthorMiniCard(
 
 @Composable
 private fun CardContainer(
+    surfaceColor: Color,
+    borderColor: Color,
     content: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(LxSurfaceLight)
-            .border(1.dp, LxBorderLight, RoundedCornerShape(18.dp))
+            .background(surfaceColor)
+            .border(1.dp, borderColor, RoundedCornerShape(18.dp))
     ) {
         content()
     }
@@ -898,17 +987,19 @@ private fun TopNavBar(
     showMenu: Boolean,
     onShowMenu: (Boolean) -> Unit,
     onEditBook: () -> Unit,
-    onDeleteBook: () -> Unit
+    onDeleteBook: () -> Unit,
+    isDark: Boolean,
+    backgroundColor: Color,
+    primaryText: Color
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(LxBackgroundLight)
+                .background(backgroundColor)
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Back button
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -919,7 +1010,7 @@ private fun TopNavBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.Black.copy(alpha = 0.92f),
+                    tint = primaryText,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -927,7 +1018,6 @@ private fun TopNavBar(
             Spacer(modifier = Modifier.weight(1f))
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                // Bookmark / favorite
                 Box(
                     modifier = Modifier
                         .size(40.dp)
@@ -938,12 +1028,11 @@ private fun TopNavBar(
                     Icon(
                         imageVector = if (isBookmarked) Icons.Default.Star else Icons.Default.StarBorder,
                         contentDescription = "Favorite",
-                        tint = if (isBookmarked) LxAccentGold else Color.Black.copy(alpha = 0.92f),
+                        tint = if (isBookmarked) LxAccentGold else primaryText,
                         modifier = Modifier.size(18.dp)
                     )
                 }
 
-                // Share
                 Box(
                     modifier = Modifier
                         .size(40.dp)
@@ -954,12 +1043,11 @@ private fun TopNavBar(
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = "Share",
-                        tint = Color.Black.copy(alpha = 0.92f),
+                        tint = primaryText,
                         modifier = Modifier.size(18.dp)
                     )
                 }
 
-                // More options
                 Box {
                     Box(
                         modifier = Modifier
@@ -971,7 +1059,7 @@ private fun TopNavBar(
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = "More options",
-                            tint = Color.Black.copy(alpha = 0.92f),
+                            tint = primaryText,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -998,12 +1086,14 @@ private fun TopNavBar(
             }
         }
 
-        // Bottom border line
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color.Black.copy(alpha = 0.06f))
+                .background(
+                    if (isDark) Color.White.copy(alpha = 0.06f)
+                    else Color.Black.copy(alpha = 0.06f)
+                )
         )
     }
 }

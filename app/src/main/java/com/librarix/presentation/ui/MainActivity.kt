@@ -203,7 +203,20 @@ fun MainScreen() {
                 onAddToCollection = { },
                 onEditBook = { },
                 onDeleteBook = {
+                    homeViewModel.deleteBook(currentBook!!.id)
                     showBookDetail = false
+                },
+                onStatusChange = { status ->
+                    homeViewModel.updateStatus(currentBook!!.id, status)
+                    currentBook = currentBook!!.copy(status = status)
+                },
+                onRatingChange = { rating ->
+                    homeViewModel.updateRating(currentBook!!.id, rating)
+                    currentBook = currentBook!!.copy(rating = rating)
+                },
+                onToggleFavorite = {
+                    homeViewModel.toggleFavorite(currentBook!!.id)
+                    currentBook = currentBook!!.copy(isFavorite = !currentBook!!.isFavorite)
                 },
                 onShare = { }
             )
@@ -214,6 +227,8 @@ fun MainScreen() {
             UpdateProgressView(
                 book = currentBook!!,
                 onSave = { updatedBook ->
+                    homeViewModel.updateBook(updatedBook)
+                    currentBook = updatedBook
                     showProgressSheet = false
                 },
                 onDismiss = { showProgressSheet = false }

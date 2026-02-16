@@ -124,6 +124,41 @@ class HomeViewModel @Inject constructor(
             libraryRepository.deleteBook(bookId)
         }
     }
+
+    fun updateBook(book: SavedBook) {
+        viewModelScope.launch {
+            libraryRepository.updateBook(book)
+        }
+    }
+
+    fun updateRating(bookId: String, rating: Double) {
+        viewModelScope.launch {
+            libraryRepository.getBookById(bookId)?.let { book ->
+                libraryRepository.updateBook(book.copy(rating = rating))
+            }
+        }
+    }
+
+    fun toggleFavorite(bookId: String) {
+        viewModelScope.launch {
+            libraryRepository.getBookById(bookId)?.let { book ->
+                libraryRepository.updateBook(book.copy(isFavorite = !book.isFavorite))
+            }
+        }
+    }
+
+    fun updateStatus(bookId: String, status: BookStatus) {
+        viewModelScope.launch {
+            libraryRepository.getBookById(bookId)?.let { book ->
+                val updated = book.copy(
+                    status = status,
+                    finishedDate = if (status == BookStatus.FINISHED && book.finishedDate == null)
+                        System.currentTimeMillis() else book.finishedDate
+                )
+                libraryRepository.updateBook(updated)
+            }
+        }
+    }
 }
 
 interface LibraryRepository {

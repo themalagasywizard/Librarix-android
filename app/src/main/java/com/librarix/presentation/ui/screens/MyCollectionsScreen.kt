@@ -43,9 +43,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -61,7 +65,7 @@ fun MyCollectionsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
             .padding(16.dp)
     ) {
         // Header
@@ -69,7 +73,7 @@ fun MyCollectionsScreen(
             text = "MY COLLECTIONS",
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            color = Color.Black
+            color = if (LocalIsDarkTheme.current) Color.White else Color.Black
         )
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -94,7 +98,7 @@ fun MyCollectionsScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = LxPrimary,
-                    unfocusedBorderColor = LxBorderLight
+                    unfocusedBorderColor = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight
                 )
             )
 
@@ -175,7 +179,7 @@ private fun CollectionCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -191,7 +195,7 @@ private fun CollectionCard(
                             .weight(1f)
                             .height(50.dp)
                             .background(
-                                color = LxBorderLight,
+                                color = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight,
                                 shape = RoundedCornerShape(6.dp)
                             )
                     )
@@ -204,7 +208,7 @@ private fun CollectionCard(
                 text = collection.title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.Black,
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black,
                 maxLines = 1
             )
 

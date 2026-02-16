@@ -28,6 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.librarix.domain.model.BookNote
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
 import com.librarix.presentation.ui.theme.LxPrimary
 import com.librarix.presentation.ui.theme.LxTextSecondary
@@ -44,7 +46,7 @@ fun AllNotesLibraryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
     ) {
         // Top bar
         Row(
@@ -115,7 +117,7 @@ private fun NoteItem(
             text = note.text,
             fontWeight = FontWeight.Medium,
             fontSize = 15.sp,
-            color = Color.Black.copy(alpha = 0.88f),
+            color = if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.88f) else Color.Black.copy(alpha = 0.88f),
             modifier = Modifier.fillMaxWidth()
         )
 

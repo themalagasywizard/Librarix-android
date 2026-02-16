@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,6 +59,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.librarix.presentation.ui.theme.LocalDarkModePreference
 import com.librarix.presentation.ui.theme.LxAccentGold
 import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
@@ -74,7 +75,7 @@ private const val SUPPORT_EMAIL = "ryantrumble1997@gmail.com"
 fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val background = if (isDark) LxBackgroundDark else LxBackgroundLight
     val surface = if (isDark) LxSurfaceDark else LxSurfaceLight
     val border = if (isDark) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.05f)
@@ -84,8 +85,9 @@ fun SettingsScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
-    // Local state
-    var darkModeEnabled by remember { mutableStateOf(false) }
+    // Dark mode from shared preference
+    val darkModePref = LocalDarkModePreference.current
+    var darkModeEnabled by darkModePref.override
     var isSignedIn by remember { mutableStateOf(false) }
     var isDeletingAccount by remember { mutableStateOf(false) }
 
@@ -316,7 +318,7 @@ fun SettingsScreen(
                             color = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
                         )
                         Text(
-                            text = if (darkModeEnabled) "Dark" else "Light",
+                            text = if (darkModeEnabled == true) "Dark" else "Light",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             color = if (isDark) Color.White.copy(alpha = 0.45f) else Color.Black.copy(alpha = 0.45f)
@@ -324,7 +326,7 @@ fun SettingsScreen(
                     }
 
                     Switch(
-                        checked = darkModeEnabled,
+                        checked = darkModeEnabled == true,
                         onCheckedChange = { darkModeEnabled = it },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.White,

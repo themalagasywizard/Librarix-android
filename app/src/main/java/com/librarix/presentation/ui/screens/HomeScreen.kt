@@ -1,9 +1,10 @@
 package com.librarix.presentation.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,22 +22,32 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.BookmarkAdd
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,11 +57,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.NoteEntry
 import com.librarix.domain.model.SavedBook
 import com.librarix.presentation.ui.theme.LxAccentGold
@@ -82,7 +95,10 @@ fun HomeScreen(
     val viewModel = hiltViewModel<HomeViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
-    val isDark = isSystemInDarkTheme()
+    var showBooksReadSheet by remember { mutableStateOf(false) }
+    var showGoalEditSheet by remember { mutableStateOf(false) }
+
+    val isDark = LocalIsDarkTheme.current
     val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
     val primaryText = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
     val secondaryText = if (isDark) Color.White.copy(alpha = 0.55f) else Color.Black.copy(alpha = 0.45f)
@@ -90,73 +106,75 @@ fun HomeScreen(
     val borderColor = if (isDark) LxBorderDark else LxBorderLight
     val accentLink = if (isDark) Color(0xFF80CBC4) else LxPrimary // teal.opacity(0.9) for dark
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor)
-    ) {
-        // ---- Header ----
-        item {
-            HomeHeader(
-                primaryText = primaryText,
-                secondaryText = secondaryText,
-                surfaceColor = surfaceColor,
-                borderColor = borderColor,
-                backgroundColor = backgroundColor,
-                isDark = isDark,
-                onProfileClick = onViewAllClick
-            )
-        }
-
-        // ---- Currently Reading ----
-        item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Spacer(modifier = Modifier.height(18.dp))
-
-                SectionHeader(
-                    title = "Currently Reading",
-                    showSeeAll = true,
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+        ) {
+            // ---- Header ----
+            item {
+                HomeHeader(
                     primaryText = primaryText,
-                    accentLink = accentLink,
-                    onSeeAllClick = onViewAllClick
+                    secondaryText = secondaryText,
+                    surfaceColor = surfaceColor,
+                    borderColor = borderColor,
+                    backgroundColor = backgroundColor,
+                    isDark = isDark,
+                    onProfileClick = onViewAllClick
                 )
+            }
 
-                Spacer(modifier = Modifier.height(12.dp))
+            // ---- Currently Reading ----
+            item {
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Spacer(modifier = Modifier.height(18.dp))
 
-                if (uiState.currentlyReadingBook != null) {
-                    CurrentlyReadingCard(
-                        book = uiState.currentlyReadingBook!!,
+                    SectionHeader(
+                        title = "Currently Reading",
+                        showSeeAll = true,
+                        primaryText = primaryText,
+                        accentLink = accentLink,
+                        onSeeAllClick = onViewAllClick
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    if (uiState.currentlyReadingBook != null) {
+                        CurrentlyReadingCard(
+                            book = uiState.currentlyReadingBook!!,
+                            isDark = isDark,
+                            primaryText = primaryText,
+                            secondaryText = secondaryText,
+                            surfaceColor = surfaceColor,
+                            onCoverClick = { onBookClick(uiState.currentlyReadingBook!!) },
+                            onUpdateProgress = { onUpdateProgress(uiState.currentlyReadingBook!!) }
+                        )
+                    } else {
+                        EmptyReadingState(
+                            primaryText = primaryText,
+                            secondaryText = secondaryText,
+                            surfaceColor = surfaceColor
+                        )
+                    }
+                }
+            }
+
+            // ---- Bento Section (Goal + Stats) ----
+            item {
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Spacer(modifier = Modifier.height(22.dp))
+
+                    BentoSection(
+                        uiState = uiState,
                         isDark = isDark,
                         primaryText = primaryText,
                         secondaryText = secondaryText,
                         surfaceColor = surfaceColor,
-                        onCoverClick = { onBookClick(uiState.currentlyReadingBook!!) },
-                        onUpdateProgress = { onUpdateProgress(uiState.currentlyReadingBook!!) }
-                    )
-                } else {
-                    EmptyReadingState(
-                        primaryText = primaryText,
-                        secondaryText = secondaryText,
-                        surfaceColor = surfaceColor
+                        onGoalCardClick = { showBooksReadSheet = true }
                     )
                 }
             }
-        }
-
-        // ---- Bento Section (Goal + Stats) ----
-        item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Spacer(modifier = Modifier.height(22.dp))
-
-                BentoSection(
-                    uiState = uiState,
-                    isDark = isDark,
-                    primaryText = primaryText,
-                    secondaryText = secondaryText,
-                    surfaceColor = surfaceColor
-                )
-            }
-        }
 
         // ---- Freshly Shelved ----
         item {
@@ -219,6 +237,42 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(100.dp))
             }
+        }
+        }
+
+        // Books Read This Year sheet overlay
+        if (showBooksReadSheet) {
+            BooksReadThisYearSheet(
+                uiState = uiState,
+                isDark = isDark,
+                backgroundColor = backgroundColor,
+                primaryText = primaryText,
+                secondaryText = secondaryText,
+                surfaceColor = surfaceColor,
+                onDismiss = { showBooksReadSheet = false },
+                onEditGoal = {
+                    showBooksReadSheet = false
+                    showGoalEditSheet = true
+                }
+            )
+        }
+
+        // Yearly Goal Edit sheet overlay
+        if (showGoalEditSheet) {
+            YearlyGoalEditSheet(
+                currentGoal = uiState.yearlyGoal,
+                isDark = isDark,
+                backgroundColor = backgroundColor,
+                primaryText = primaryText,
+                secondaryText = secondaryText,
+                surfaceColor = surfaceColor,
+                borderColor = borderColor,
+                onSave = { goal ->
+                    viewModel.setYearlyGoal(goal)
+                    showGoalEditSheet = false
+                },
+                onDismiss = { showGoalEditSheet = false }
+            )
         }
     }
 }
@@ -370,7 +424,6 @@ private fun CurrentlyReadingCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(176.dp)
             .clickable { onCoverClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = surfaceColor),
@@ -380,19 +433,19 @@ private fun CurrentlyReadingCard(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxWidth()
+                .padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Book cover
+            // Book cover - fixed size
             if (book.coverURLString != null) {
                 AsyncImage(
                     model = book.coverURLString,
                     contentDescription = book.title,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .width(90.dp)
-                        .aspectRatio(2f / 3f)
+                        .width(100.dp)
+                        .height(152.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .shadow(
                             elevation = 8.dp,
@@ -403,8 +456,8 @@ private fun CurrentlyReadingCard(
             } else {
                 Box(
                     modifier = Modifier
-                        .width(90.dp)
-                        .aspectRatio(2f / 3f)
+                        .width(100.dp)
+                        .height(152.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(
                             if (isDark) Color.White.copy(alpha = 0.10f)
@@ -422,63 +475,100 @@ private fun CurrentlyReadingCard(
                 }
             }
 
-            // Book details
+            // Right column - matches cover height exactly
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .height(152.dp)
             ) {
-                Column {
+                // Top: title + author - takes remaining space, pushes bottom down
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = book.title,
-                        fontSize = 20.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = primaryText,
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 19.sp
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = book.author,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
-                        color = secondaryText
+                        color = secondaryText,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
+                // Bottom: progress + button - fixed size, always fully visible
                 Column {
-                    // Progress row
-                    ProgressRow(
-                        progress = progress,
-                        isDark = isDark
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Progress",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Gray.copy(alpha = 0.8f)
+                        )
+                        Text(
+                            text = "${(progress * 100).toInt()}%",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LxAccentGold
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    // Update Progress button
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(
+                                if (isDark) Color.White.copy(alpha = 0.10f)
+                                else Color.Black.copy(alpha = 0.05f)
+                            )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = progress.coerceIn(0f, 1f))
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(LxAccentGold)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .background(LxPrimary)
                             .clickable { onUpdateProgress() }
-                            .padding(vertical = 11.dp),
+                            .padding(vertical = 9.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 imageVector = Icons.Default.BookmarkAdd,
                                 contentDescription = null,
-                                modifier = Modifier.size(16.dp),
+                                modifier = Modifier.size(14.dp),
                                 tint = Color.White
                             )
                             Text(
                                 text = "Update Progress",
-                                fontSize = 14.sp,
+                                fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
@@ -519,7 +609,7 @@ private fun ProgressRow(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
         Box(
             modifier = Modifier
@@ -586,7 +676,8 @@ private fun BentoSection(
     isDark: Boolean,
     primaryText: Color,
     secondaryText: Color,
-    surfaceColor: Color
+    surfaceColor: Color,
+    onGoalCardClick: () -> Unit
 ) {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val goalProgress = if (uiState.yearlyGoal == 0) 0f
@@ -598,7 +689,7 @@ private fun BentoSection(
             .height(160.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Goal Card (left, tall)
+        // Goal Card (left, tall) - tap to see books read this year
         GoalCard(
             year = currentYear,
             current = uiState.finishedBooksThisYear,
@@ -608,6 +699,7 @@ private fun BentoSection(
             primaryText = primaryText,
             secondaryText = secondaryText,
             surfaceColor = surfaceColor,
+            onClick = onGoalCardClick,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
@@ -669,10 +761,11 @@ private fun GoalCard(
     primaryText: Color,
     secondaryText: Color,
     surfaceColor: Color,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = surfaceColor),
         elevation = CardDefaults.cardElevation(
@@ -1022,6 +1115,373 @@ private fun LatestNotesCard(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Books Read This Year Sheet
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun BooksReadThisYearSheet(
+    uiState: HomeUiState,
+    isDark: Boolean,
+    backgroundColor: Color,
+    primaryText: Color,
+    secondaryText: Color,
+    surfaceColor: Color,
+    onDismiss: () -> Unit,
+    onEditGoal: () -> Unit
+) {
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    val finishedBooks = uiState.allBooks.filter { it.status == BookStatus.FINISHED }
+        .sortedByDescending { it.finishedDate ?: 0L }
+    val goalProgress = if (uiState.yearlyGoal == 0) 0f
+    else (uiState.finishedBooksThisYear.toFloat() / uiState.yearlyGoal.toFloat()).coerceAtMost(1f)
+
+    val dateFormat = remember { SimpleDateFormat("MM/dd/yy", Locale.getDefault()) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 18.dp)
+                .padding(top = 14.dp, bottom = 30.dp)
+        ) {
+            // Header with close button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Books Read",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = primaryText
+                )
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isDark) Color.White.copy(alpha = 0.10f)
+                            else Color.Black.copy(alpha = 0.06f)
+                        )
+                        .clickable { onDismiss() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = secondaryText,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Summary header
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "${uiState.finishedBooksThisYear}",
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = LxPrimary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "of ${uiState.yearlyGoal} books read in $currentYear",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = secondaryText
+                )
+
+                if (uiState.yearlyGoal > 0) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 40.dp)
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                if (isDark) Color.White.copy(alpha = 0.10f)
+                                else Color.Black.copy(alpha = 0.05f)
+                            )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(fraction = goalProgress)
+                                .height(8.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(LxAccentGold)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Edit Goal",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = LxPrimary,
+                    modifier = Modifier.clickable { onEditGoal() }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Books list
+            if (finishedBooks.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "No books finished yet",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = primaryText
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Books you finish this year will appear here.",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = secondaryText
+                    )
+                }
+            } else {
+                finishedBooks.forEach { book ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = CardDefaults.cardColors(containerColor = surfaceColor),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = if (isDark) 0.dp else 6.dp
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Cover
+                            if (book.coverURLString != null) {
+                                AsyncImage(
+                                    model = book.coverURLString,
+                                    contentDescription = book.title,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .width(50.dp)
+                                        .height(75.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .width(50.dp)
+                                        .height(75.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(
+                                            if (isDark) Color.White.copy(alpha = 0.10f)
+                                            else Color.Black.copy(alpha = 0.08f)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Book,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp),
+                                        tint = secondaryText
+                                    )
+                                }
+                            }
+
+                            // Book info
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = book.title,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = primaryText,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = book.author,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = secondaryText,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                if (book.finishedDate != null) {
+                                    Text(
+                                        text = "Finished ${dateFormat.format(Date(book.finishedDate))}",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = secondaryText.copy(alpha = 0.8f)
+                                    )
+                                }
+                            }
+
+                            // Checkmark
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = "Finished",
+                                tint = Color(0xFF4CAF50),
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Yearly Goal Edit Sheet
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun YearlyGoalEditSheet(
+    currentGoal: Int,
+    isDark: Boolean,
+    backgroundColor: Color,
+    primaryText: Color,
+    secondaryText: Color,
+    surfaceColor: Color,
+    borderColor: Color,
+    onSave: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    var goalText by remember { mutableStateOf(currentGoal.toString()) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 18.dp)
+                .padding(top = 14.dp, bottom = 18.dp)
+        ) {
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "This Year's Reading Goal ($currentYear)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = primaryText
+                )
+                Text(
+                    text = "Save",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = LxPrimary,
+                    modifier = Modifier.clickable {
+                        val goal = goalText.toIntOrNull() ?: currentGoal
+                        onSave(goal.coerceIn(1, 999))
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Goal input
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "GOAL",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp,
+                    color = secondaryText
+                )
+                TextField(
+                    value = goalText,
+                    onValueChange = { newValue ->
+                        goalText = newValue.filter { it.isDigit() }
+                    },
+                    placeholder = {
+                        Text(
+                            "30",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = secondaryText
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .border(1.dp, borderColor, RoundedCornerShape(14.dp)),
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = primaryText
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = surfaceColor,
+                        unfocusedContainerColor = surfaceColor,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Back button
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(
+                        if (isDark) Color.White.copy(alpha = 0.08f)
+                        else Color.Black.copy(alpha = 0.05f)
+                    )
+                    .clickable { onDismiss() }
+                    .padding(vertical = 14.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Cancel",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = secondaryText
+                )
             }
         }
     }

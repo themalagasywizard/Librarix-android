@@ -1,17 +1,29 @@
 package com.librarix.presentation.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+
+// Dark mode preference: null = follow system, true = force dark, false = force light
+class DarkModePreference {
+    var override = mutableStateOf<Boolean?>(null)
+}
+
+val LocalDarkModePreference = compositionLocalOf { DarkModePreference() }
+
+// Provides the resolved isDark boolean to all screens - use this instead of isSystemInDarkTheme()
+val LocalIsDarkTheme = compositionLocalOf { false }
 
 private val DarkColorScheme = darkColorScheme(
     primary = LxPrimary,
@@ -54,22 +66,28 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun LibrarixTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    darkModeOverride: Boolean? = null,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val isDark = darkModeOverride ?: darkTheme
+    val colorScheme = if (isDark) DarkColorScheme else LightColorScheme
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            window.navigationBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDark
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !isDark
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalIsDarkTheme provides isDark) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

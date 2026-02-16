@@ -42,10 +42,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -64,12 +68,17 @@ fun ProfileScreen(
     onSettingsClick: () -> Unit,
     onEditProfile: () -> Unit = {}
 ) {
+    val isDark = LocalIsDarkTheme.current
+    val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
+    val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
+    val borderColor = if (isDark) LxBorderDark else LxBorderLight
+    val primaryText = if (isDark) Color.White else Color.Black
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(backgroundColor)
             .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
@@ -83,14 +92,14 @@ fun ProfileScreen(
                 text = "Profile",
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                color = Color.Black
+                color = primaryText
             )
 
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
-                    tint = Color.Black
+                    tint = primaryText
                 )
             }
         }
@@ -100,7 +109,7 @@ fun ProfileScreen(
         // Profile card
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+            colors = CardDefaults.cardColors(containerColor = surfaceColor),
             shape = RoundedCornerShape(20.dp)
         ) {
             Column(
@@ -114,7 +123,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .background(LxBorderLight),
+                        .background(borderColor),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -134,7 +143,7 @@ fun ProfileScreen(
                         text = profile.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
-                        color = Color.Black
+                        color = primaryText
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -168,7 +177,7 @@ fun ProfileScreen(
             text = "This Year",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = Color.Black
+            color = primaryText
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -199,14 +208,14 @@ fun ProfileScreen(
             text = "Achievements",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = Color.Black
+            color = primaryText
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+            colors = CardDefaults.cardColors(containerColor = surfaceColor),
             shape = RoundedCornerShape(16.dp)
         ) {
             Row(
@@ -242,14 +251,14 @@ fun ProfileScreen(
             text = "Reading Lists",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = Color.Black
+            color = primaryText
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+            colors = CardDefaults.cardColors(containerColor = surfaceColor),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column {
@@ -260,7 +269,7 @@ fun ProfileScreen(
                     onClick = { }
                 )
 
-                Divider(color = LxBorderLight)
+                Divider(color = borderColor)
 
                 ReadingListItem(
                     title = "Favorites",
@@ -282,9 +291,10 @@ private fun ProfileStatCard(
     label: String,
     modifier: Modifier = Modifier
 ) {
+    val isDark = LocalIsDarkTheme.current
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (isDark) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -306,7 +316,7 @@ private fun ProfileStatCard(
                 text = value,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
-                color = Color.Black
+                color = if (isDark) Color.White else Color.Black
             )
 
             Text(
@@ -325,13 +335,14 @@ private fun AchievementItem(
     count: Int,
     label: String
 ) {
+    val isDark = LocalIsDarkTheme.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (count > 0) LxAccentGold else LxBorderLight,
+            tint = if (count > 0) LxAccentGold else if (isDark) LxBorderDark else LxBorderLight,
             modifier = Modifier.size(32.dp)
         )
 
@@ -341,7 +352,7 @@ private fun AchievementItem(
             text = "$count",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = Color.Black
+            color = if (isDark) Color.White else Color.Black
         )
 
         Text(
@@ -360,6 +371,7 @@ private fun ReadingListItem(
     icon: ImageVector,
     onClick: () -> Unit
 ) {
+    val isDark = LocalIsDarkTheme.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -380,7 +392,7 @@ private fun ReadingListItem(
                 text = title,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = Color.Black
+                color = if (isDark) Color.White else Color.Black
             )
 
             Text(

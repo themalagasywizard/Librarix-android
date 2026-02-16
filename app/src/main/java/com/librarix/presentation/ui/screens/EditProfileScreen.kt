@@ -50,9 +50,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -95,7 +99,7 @@ fun EditProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
@@ -116,7 +120,7 @@ fun EditProfileScreen(
                 text = "Edit Profile",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.Black,
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black,
                 modifier = Modifier.weight(1f)
             )
 
@@ -171,12 +175,12 @@ fun EditProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = LxSurfaceLight,
+                    color = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight,
                     shape = RoundedCornerShape(20.dp)
                 )
                 .border(
                     width = 1.dp,
-                    color = LxBorderLight,
+                    color = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight,
                     shape = RoundedCornerShape(20.dp)
                 )
                 .padding(16.dp)
@@ -202,7 +206,7 @@ fun EditProfileScreen(
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = LxPrimary,
-                    unfocusedBorderColor = LxBorderLight
+                    unfocusedBorderColor = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight
                 )
             )
 

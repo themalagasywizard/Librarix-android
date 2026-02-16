@@ -75,8 +75,11 @@ import coil.compose.AsyncImage
 import com.librarix.data.remote.OpenLibraryDoc
 import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.SavedBook
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
 import com.librarix.presentation.ui.theme.LxSurfaceDark
@@ -131,7 +134,7 @@ fun AddBookScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // --- Header ---
@@ -275,7 +278,7 @@ fun AddBookScreen(
             onDismissRequest = { selectedDoc = null },
             sheetState = sheetState,
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-            containerColor = LxBackgroundLight,
+            containerColor = if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight,
             dragHandle = {
                 Box(
                     modifier = Modifier
@@ -341,7 +344,7 @@ private fun Header(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(LxBackgroundLight)
+                .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
                 .padding(horizontal = 16.dp)
                 .padding(top = 18.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -361,7 +364,7 @@ private fun Header(
                 text = "Add New Book",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black.copy(alpha = 0.92f)
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black.copy(alpha = 0.92f)
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -385,7 +388,7 @@ private fun Header(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(LxBorderLight)
+                .background(if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight)
         )
     }
 }
@@ -454,7 +457,7 @@ private fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.Black.copy(alpha = 0.06f))
+            .background(if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f))
             .padding(horizontal = 14.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -484,7 +487,7 @@ private fun SearchBar(
             textStyle = androidx.compose.ui.text.TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.Black.copy(alpha = 0.90f)
+                color = if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.90f) else Color.Black.copy(alpha = 0.90f)
             ),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -522,8 +525,8 @@ private fun SearchResultRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
-            .border(1.dp, LxBorderLight, RoundedCornerShape(14.dp))
+            .background(if (LocalIsDarkTheme.current) LxSurfaceDark else Color.White)
+            .border(1.dp, if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight, RoundedCornerShape(14.dp))
             .clickable { onTap() }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -568,7 +571,7 @@ private fun SearchResultRow(
                 text = doc.displayTitle,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black.copy(alpha = 0.92f),
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black.copy(alpha = 0.92f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -670,7 +673,7 @@ private fun ManualEntryToggle(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.Black.copy(alpha = 0.05f))
+            .background(if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.05f))
             .clickable { onToggle() }
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -721,7 +724,7 @@ private fun ManualEntryFields(
                     .width(110.dp)
                     .height(165.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Black.copy(alpha = 0.06f))
+                    .background(if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f))
                     .border(
                         width = 2.dp,
                         color = Color.Black.copy(alpha = 0.16f),
@@ -833,12 +836,12 @@ private fun LabeledField(
             textStyle = androidx.compose.ui.text.TextStyle(
                 fontSize = 16.sp,
                 fontWeight = fontWeight,
-                color = Color.Black.copy(alpha = 0.90f)
+                color = if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.90f) else Color.Black.copy(alpha = 0.90f)
             ),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Black.copy(alpha = 0.06f),
-                unfocusedContainerColor = Color.Black.copy(alpha = 0.06f),
+                focusedContainerColor = if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f),
+                unfocusedContainerColor = if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = LxPrimary
@@ -874,7 +877,7 @@ private fun GenrePicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Black.copy(alpha = 0.06f))
+                    .background(if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f))
                     .clickable { expanded = true }
                     .padding(horizontal = 14.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -882,7 +885,7 @@ private fun GenrePicker(
                 Text(
                     text = genre.title,
                     fontSize = 16.sp,
-                    color = Color.Black.copy(alpha = 0.90f),
+                    color = if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.90f) else Color.Black.copy(alpha = 0.90f),
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
@@ -926,7 +929,7 @@ private fun StatusAndRatingSection(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.Black.copy(alpha = 0.04f))
+            .background(if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.06f) else Color.Black.copy(alpha = 0.04f))
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -998,7 +1001,7 @@ private fun StatusSegmentedControl(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.Black.copy(alpha = 0.06f))
+            .background(if (LocalIsDarkTheme.current) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f))
             .padding(4.dp)
     ) {
         items.forEach { (status, label) ->
@@ -1063,7 +1066,7 @@ private fun BottomCTA(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
     ) {
         // Gradient fade
         Box(
@@ -1072,11 +1075,10 @@ private fun BottomCTA(
                 .height(44.dp)
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(
-                            LxBackgroundLight.copy(alpha = 0f),
-                            LxBackgroundLight.copy(alpha = 0.96f),
-                            LxBackgroundLight
-                        )
+                        colors = run {
+                            val bg = if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight
+                            listOf(bg.copy(alpha = 0f), bg.copy(alpha = 0.96f), bg)
+                        }
                     )
                 )
         )
@@ -1180,7 +1182,7 @@ private fun SelectedBookSheetContent(
             text = doc.displayTitle,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black.copy(alpha = 0.92f),
+            color = if (LocalIsDarkTheme.current) Color.White else Color.Black.copy(alpha = 0.92f),
             textAlign = TextAlign.Center,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -1260,10 +1262,10 @@ private fun SelectedBookSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp)
-                    .border(1.dp, LxBorderLight, RoundedCornerShape(16.dp)),
+                    .border(1.dp, if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
+                    containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else Color.White
                 )
             ) {
                 Row(

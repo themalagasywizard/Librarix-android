@@ -41,7 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import coil.compose.AsyncImage
 import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.SavedBook
@@ -69,7 +69,7 @@ fun UpdateProgressView(
     }
     var showingNote by remember { mutableStateOf(false) }
 
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
     val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
     val textColor = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)

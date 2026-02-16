@@ -42,9 +42,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.librarix.domain.model.SavedBook
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -57,7 +61,7 @@ fun CurrentlyReadingListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
     ) {
         // Top bar
         Row(
@@ -71,7 +75,7 @@ fun CurrentlyReadingListScreen(
                 text = "Currently Reading",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = Color.Black
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -81,7 +85,7 @@ fun CurrentlyReadingListScreen(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(RoundedCornerShape(18.dp))
-                    .background(LxBorderLight)
+                    .background(if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight)
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
@@ -97,7 +101,7 @@ fun CurrentlyReadingListScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(LxBorderLight)
+                .background(if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight)
         )
 
         // Content
@@ -128,7 +132,7 @@ fun CurrentlyReadingListScreen(
 private fun EmptyState(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(18.dp)
     ) {
         Column(
@@ -141,7 +145,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
                 text = "Nothing in progress",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = Color.Black
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -177,7 +181,7 @@ fun ReadingBookRowItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -214,7 +218,7 @@ fun ReadingBookRowItem(
                             fontSize = 16.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            color = Color.Black
+                            color = if (LocalIsDarkTheme.current) Color.White else Color.Black
                         )
 
                         Spacer(modifier = Modifier.height(3.dp))
@@ -246,7 +250,7 @@ fun ReadingBookRowItem(
                         .height(8.dp)
                         .clip(RoundedCornerShape(50)),
                     color = LxPrimary,
-                    trackColor = LxBorderLight
+                    trackColor = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight
                 )
             }
         }

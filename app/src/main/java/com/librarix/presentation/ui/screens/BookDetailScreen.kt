@@ -8,7 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -93,7 +93,7 @@ fun BookDetailScreen(
     onToggleFavorite: () -> Unit,
     onShare: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
     val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
     val borderColor = if (isDark) LxBorderDark else LxBorderLight
@@ -245,7 +245,7 @@ private fun HeroSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(320.dp)
+            .height(352.dp)
     ) {
         // Blurred backdrop
         AsyncImage(
@@ -253,7 +253,7 @@ private fun HeroSection(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(330.dp)
                 .alpha(if (isDark) 0.20f else 0.30f)
                 .blur(radius = 30.dp)
                 .scale(1.15f),
@@ -264,7 +264,7 @@ private fun HeroSection(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(320.dp)
+                .height(352.dp)
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
@@ -280,7 +280,7 @@ private fun HeroSection(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(320.dp)
+                .height(352.dp)
                 .padding(horizontal = 16.dp)
                 .padding(top = 97.dp, bottom = 10.dp),
             contentAlignment = Alignment.TopCenter
@@ -292,7 +292,7 @@ private fun HeroSection(
                     contentDescription = book.title,
                     modifier = Modifier
                         .width(192.dp)
-                        .height(288.dp)
+                        .height(317.dp)
                         .shadow(
                             elevation = 20.dp,
                             shape = RoundedCornerShape(12.dp),
@@ -448,6 +448,7 @@ private fun ActionsBar(
                     }
                 },
                 title = currentStatus.displayTitle,
+                modifier = Modifier.fillMaxWidth(),
                 surfaceColor = surfaceColor,
                 borderColor = borderColor,
                 secondaryText = secondaryText,

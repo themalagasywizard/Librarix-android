@@ -49,10 +49,14 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.librarix.domain.model.BookStatus
 import com.librarix.domain.model.SavedBook
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 import androidx.compose.foundation.text.BasicTextField
@@ -63,6 +67,13 @@ fun LibraryScreen(
     books: List<SavedBook> = emptyList(),
     onBookClick: (SavedBook) -> Unit
 ) {
+    val isDark = LocalIsDarkTheme.current
+    val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
+    val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
+    val borderColor = if (isDark) LxBorderDark else LxBorderLight
+    val primaryText = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
+    val secondaryBg = if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f)
+
     var searchText by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf(Filter.ALL) }
     var viewMode by remember { mutableStateOf(ViewMode.GRID) }
@@ -89,13 +100,13 @@ fun LibraryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(backgroundColor)
     ) {
         // Header (sticky, opaque, with bottom border)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(LxBackgroundLight)
+                .background(backgroundColor)
                 .padding(horizontal = 16.dp)
                 .padding(top = 20.dp, bottom = 10.dp)
         ) {
@@ -109,14 +120,14 @@ fun LibraryScreen(
                     text = "Library",
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 32.sp,
-                    color = Color.Black.copy(alpha = 0.92f)
+                    color = primaryText
                 )
 
                 // Segmented view toggle (matches iOS)
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.Black.copy(alpha = 0.06f))
+                        .background(secondaryBg)
                         .padding(6.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
@@ -140,8 +151,8 @@ fun LibraryScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(14.dp))
-                    .background(LxSurfaceLight)
-                    .border(1.dp, Color.Black.copy(alpha = 0.12f), RoundedCornerShape(14.dp))
+                    .background(surfaceColor)
+                    .border(1.dp, borderColor, RoundedCornerShape(14.dp))
                     .padding(horizontal = 14.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -167,7 +178,7 @@ fun LibraryScreen(
                         textStyle = TextStyle(
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.Black.copy(alpha = 0.90f)
+                            color = if (isDark) Color.White.copy(alpha = 0.90f) else Color.Black.copy(alpha = 0.90f)
                         ),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -190,7 +201,7 @@ fun LibraryScreen(
                             .clip(RoundedCornerShape(50))
                             .background(
                                 if (isActive) LxPrimary
-                                else Color.Black.copy(alpha = 0.06f)
+                                else secondaryBg
                             )
                             .clickable { selectedFilter = filter }
                             .padding(horizontal = 18.dp)
@@ -201,7 +212,7 @@ fun LibraryScreen(
                             text = filter.title,
                             fontSize = 14.sp,
                             fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
-                            color = if (isActive) Color.White else Color.Black.copy(alpha = 0.60f)
+                            color = if (isActive) Color.White else if (isDark) Color.White.copy(alpha = 0.60f) else Color.Black.copy(alpha = 0.60f)
                         )
                     }
                 }
@@ -213,7 +224,7 @@ fun LibraryScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(LxBorderLight)
+                .background(borderColor)
         )
 
         // Content
@@ -233,7 +244,7 @@ fun LibraryScreen(
                         text = "No saved books yet",
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        color = Color.Black.copy(alpha = 0.92f)
+                        color = primaryText
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
@@ -301,11 +312,12 @@ private fun ViewToggleButton(
     iconText: String,
     onClick: () -> Unit
 ) {
+    val isDark = LocalIsDarkTheme.current
     Box(
         modifier = Modifier
             .size(width = 32.dp, height = 30.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isActive) Color.White else Color.Transparent)
+            .background(if (isActive) (if (isDark) Color.White.copy(alpha = 0.15f) else Color.White) else Color.Transparent)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -313,7 +325,7 @@ private fun ViewToggleButton(
             text = iconText,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = if (isActive) LxPrimary else Color.Black.copy(alpha = 0.45f)
+            color = if (isActive) LxPrimary else if (isDark) Color.White.copy(alpha = 0.45f) else Color.Black.copy(alpha = 0.45f)
         )
     }
 }
@@ -325,6 +337,8 @@ private fun SavedBookGridCard(
     book: SavedBook,
     onClick: () -> Unit
 ) {
+    val isDark = LocalIsDarkTheme.current
+    val primaryText = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -356,13 +370,13 @@ private fun SavedBookGridCard(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.08f)),
+                        .background(if (isDark) Color.White.copy(alpha = 0.10f) else Color.Black.copy(alpha = 0.08f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "\uD83D\uDCD5",
                         fontSize = 18.sp,
-                        color = Color.Black.copy(alpha = 0.25f)
+                        color = if (isDark) Color.White.copy(alpha = 0.25f) else Color.Black.copy(alpha = 0.25f)
                     )
                 }
             }
@@ -394,7 +408,7 @@ private fun SavedBookGridCard(
             fontSize = 16.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = Color.Black.copy(alpha = 0.92f)
+            color = primaryText
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -418,12 +432,13 @@ private fun SavedBookRow(
     book: SavedBook,
     onClick: () -> Unit
 ) {
+    val isDark = LocalIsDarkTheme.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White)
-            .border(1.dp, LxBorderLight, RoundedCornerShape(16.dp))
+            .background(if (isDark) LxSurfaceDark else Color.White)
+            .border(1.dp, if (isDark) LxBorderDark else LxBorderLight, RoundedCornerShape(16.dp))
             .clickable { onClick() }
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -445,13 +460,13 @@ private fun SavedBookRow(
                     .width(64.dp)
                     .height(96.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Black.copy(alpha = 0.08f)),
+                    .background(if (isDark) Color.White.copy(alpha = 0.10f) else Color.Black.copy(alpha = 0.08f)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "\uD83D\uDCD5",
                     fontSize = 14.sp,
-                    color = Color.Black.copy(alpha = 0.25f)
+                    color = if (isDark) Color.White.copy(alpha = 0.25f) else Color.Black.copy(alpha = 0.25f)
                 )
             }
         }
@@ -467,7 +482,7 @@ private fun SavedBookRow(
                 fontSize = 16.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black.copy(alpha = 0.92f)
+                color = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
             )
 
             Text(

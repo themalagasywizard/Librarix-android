@@ -79,8 +79,11 @@ import com.librarix.data.remote.OpenLibraryDoc
 import com.librarix.data.remote.OpenLibrarySubjectWork
 import com.librarix.data.remote.TrendingBookData
 import com.librarix.domain.model.DiscoverBook
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
 import com.librarix.presentation.ui.theme.LxSurfaceDark
@@ -98,15 +101,27 @@ fun DiscoverScreen(
     val viewModel: DiscoverViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsState()
 
+    val isDark = LocalIsDarkTheme.current
+    val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
+    val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
+    val borderColor = if (isDark) LxBorderDark else LxBorderLight
+    val primaryText = if (isDark) Color.White else Color.Black.copy(alpha = 0.92f)
+    val secondaryText = if (isDark) Color.White.copy(alpha = 0.55f) else Color.Black.copy(alpha = 0.45f)
+    val subtleBorder = if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(backgroundColor)
     ) {
         // Sticky header
         DiscoverHeader(
             searchQuery = state.searchQuery,
-            onSearchChanged = viewModel::onSearchChanged
+            onSearchChanged = viewModel::onSearchChanged,
+            isDark = isDark,
+            backgroundColor = backgroundColor,
+            primaryText = primaryText,
+            subtleBorder = subtleBorder
         )
 
         // Content
@@ -120,7 +135,9 @@ fun DiscoverScreen(
                 Spacer(modifier = Modifier.height(14.dp))
                 DiscoverChipsRow(
                     selectedChip = state.selectedChip,
-                    onChipChanged = viewModel::onChipChanged
+                    onChipChanged = viewModel::onChipChanged,
+                    isDark = isDark,
+                    subtleBorder = subtleBorder
                 )
             }
 
@@ -147,7 +164,9 @@ fun DiscoverScreen(
                     SearchResultsSection(
                         results = state.searchResults,
                         isSearching = state.isSearching,
-                        onBookClick = onBookClick
+                        onBookClick = onBookClick,
+                        isDark = isDark,
+                        primaryText = primaryText
                     )
                 }
             } else if (state.selectedChip == DiscoverChip.MY_COLLECTIONS) {
@@ -171,7 +190,9 @@ fun DiscoverScreen(
                         trending = state.trending,
                         trendingWorks = state.trendingWorks,
                         isLoading = state.isLoading,
-                        onBookClick = onBookClick
+                        onBookClick = onBookClick,
+                        isDark = isDark,
+                        primaryText = primaryText
                     )
                 }
 
@@ -180,7 +201,8 @@ fun DiscoverScreen(
                         CuratedCollectionsSection(
                             collections = state.collections,
                             onCollectionClick = { /* collection detail */ },
-                            onBookClick = onBookClick
+                            onBookClick = onBookClick,
+                            primaryText = primaryText
                         )
                     }
                 }
@@ -189,7 +211,8 @@ fun DiscoverScreen(
                     item {
                         WeeklyTopSellersSection(
                             topSellers = state.topSellers.take(6),
-                            onBookClick = onBookClick
+                            onBookClick = onBookClick,
+                            primaryText = primaryText
                         )
                     }
                 }
@@ -203,12 +226,21 @@ fun DiscoverScreen(
 @Composable
 private fun DiscoverHeader(
     searchQuery: String,
-    onSearchChanged: (String) -> Unit
+    onSearchChanged: (String) -> Unit,
+    isDark: Boolean,
+    backgroundColor: Color,
+    primaryText: Color,
+    subtleBorder: Color
 ) {
+    val searchFieldBg = if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.06f)
+    val searchTextColor = if (isDark) Color.White.copy(alpha = 0.90f) else Color.Black.copy(alpha = 0.90f)
+    val placeholderColor = if (isDark) Color.White.copy(alpha = 0.40f) else LxTextSecondary
+    val searchIconColor = if (isDark) Color.White.copy(alpha = 0.40f) else LxTextSecondary
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(LxBackgroundLight)
+            .background(backgroundColor)
             .padding(horizontal = 20.dp)
             .padding(top = 20.dp, bottom = 10.dp)
     ) {
@@ -216,7 +248,7 @@ private fun DiscoverHeader(
             text = "Discover",
             fontSize = 32.sp,
             fontWeight = FontWeight.Black,
-            color = Color.Black.copy(alpha = 0.92f)
+            color = primaryText
         )
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -233,14 +265,14 @@ private fun DiscoverHeader(
                     "Title, author, or ISBN...",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = LxTextSecondary
+                    color = placeholderColor
                 )
             },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = null,
-                    tint = LxTextSecondary,
+                    tint = searchIconColor,
                     modifier = Modifier.size(16.dp)
                 )
             },
@@ -250,7 +282,7 @@ private fun DiscoverHeader(
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Clear search",
-                            tint = LxTextSecondary.copy(alpha = 0.7f),
+                            tint = searchIconColor.copy(alpha = 0.7f),
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -258,26 +290,26 @@ private fun DiscoverHeader(
             },
             singleLine = true,
             colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Black.copy(alpha = 0.06f),
-                focusedContainerColor = Color.Black.copy(alpha = 0.06f),
+                unfocusedContainerColor = searchFieldBg,
+                focusedContainerColor = searchFieldBg,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.Black.copy(alpha = 0.90f)
+                cursorColor = searchTextColor
             ),
             textStyle = androidx.compose.ui.text.TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.Black.copy(alpha = 0.90f)
+                color = searchTextColor
             )
         )
     }
 
-    // Bottom border line (matches iOS: black.opacity(0.06) light mode)
+    // Bottom border line
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(Color.Black.copy(alpha = 0.06f))
+            .background(subtleBorder)
     )
 }
 
@@ -286,7 +318,9 @@ private fun DiscoverHeader(
 @Composable
 private fun DiscoverChipsRow(
     selectedChip: DiscoverChip,
-    onChipChanged: (DiscoverChip) -> Unit
+    onChipChanged: (DiscoverChip) -> Unit,
+    isDark: Boolean,
+    subtleBorder: Color
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -301,6 +335,7 @@ private fun DiscoverChipsRow(
                     .clip(RoundedCornerShape(50))
                     .background(
                         if (isActive) LxPrimary
+                        else if (isDark) Color.White.copy(alpha = 0.08f)
                         else Color.Black.copy(alpha = 0.06f)
                     )
                     .clickable { onChipChanged(chip) }
@@ -311,6 +346,7 @@ private fun DiscoverChipsRow(
                     fontSize = 14.sp,
                     fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
                     color = if (isActive) Color.White
+                    else if (isDark) Color.White.copy(alpha = 0.65f)
                     else Color.Black.copy(alpha = 0.65f)
                 )
             }
@@ -530,14 +566,16 @@ private fun TrendingNowSection(
     trending: List<TrendingBookData>,
     trendingWorks: List<OpenLibrarySubjectWork>,
     isLoading: Boolean,
-    onBookClick: (Any) -> Unit
+    onBookClick: (Any) -> Unit,
+    isDark: Boolean,
+    primaryText: Color
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
             text = "Trending Now",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black.copy(alpha = 0.92f),
+            color = primaryText,
             modifier = Modifier.padding(horizontal = 20.dp)
         )
 
@@ -548,7 +586,7 @@ private fun TrendingNowSection(
             if (trending.isEmpty() && isLoading) {
                 // Placeholders
                 items(3) {
-                    TrendingCardPlaceholder()
+                    TrendingCardPlaceholder(isDark = isDark)
                 }
             } else if (trending.isNotEmpty()) {
                 items(trending, key = { it.isbn }) { book ->
@@ -556,7 +594,8 @@ private fun TrendingNowSection(
                         title = book.displayTitle,
                         author = book.displayAuthor,
                         coverUrl = book.coverURL,
-                        onClick = { onBookClick(book) }
+                        onClick = { onBookClick(book) },
+                        primaryText = primaryText
                     )
                 }
             } else {
@@ -565,7 +604,8 @@ private fun TrendingNowSection(
                         title = work.displayTitle,
                         author = work.displayAuthor,
                         coverUrl = work.coverUrl("M"),
-                        onClick = { onBookClick(work) }
+                        onClick = { onBookClick(work) },
+                        primaryText = primaryText
                     )
                 }
             }
@@ -578,7 +618,8 @@ private fun TrendingCard(
     title: String,
     author: String,
     coverUrl: String?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    primaryText: Color
 ) {
     Column(
         modifier = Modifier
@@ -605,7 +646,7 @@ private fun TrendingCard(
             text = title,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black.copy(alpha = 0.92f),
+            color = primaryText,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -622,7 +663,10 @@ private fun TrendingCard(
 }
 
 @Composable
-private fun TrendingCardPlaceholder() {
+private fun TrendingCardPlaceholder(isDark: Boolean) {
+    val placeholderBg = if (isDark) Color.White.copy(alpha = 0.08f) else Color.Black.copy(alpha = 0.08f)
+    val placeholderText = if (isDark) Color.White.copy(alpha = 0.70f) else Color.Black.copy(alpha = 0.70f)
+
     Column(
         modifier = Modifier.width(120.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -632,7 +676,7 @@ private fun TrendingCardPlaceholder() {
                 .width(120.dp)
                 .height(180.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.Black.copy(alpha = 0.08f)),
+                .background(placeholderBg),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
@@ -646,7 +690,7 @@ private fun TrendingCardPlaceholder() {
             text = "Loading...",
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black.copy(alpha = 0.70f),
+            color = placeholderText,
             maxLines = 1
         )
 
@@ -667,14 +711,15 @@ private fun TrendingCardPlaceholder() {
 private fun CuratedCollectionsSection(
     collections: List<CuratedCollection>,
     onCollectionClick: (CuratedCollection) -> Unit,
-    onBookClick: (Any) -> Unit
+    onBookClick: (Any) -> Unit,
+    primaryText: Color
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
             text = "Curated Collections",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black.copy(alpha = 0.92f),
+            color = primaryText,
             modifier = Modifier.padding(horizontal = 20.dp)
         )
 
@@ -893,7 +938,8 @@ private fun CuratedCollectionTile(
 @Composable
 private fun WeeklyTopSellersSection(
     topSellers: List<OpenLibraryDoc>,
-    onBookClick: (Any) -> Unit
+    onBookClick: (Any) -> Unit,
+    primaryText: Color
 ) {
     val context = LocalContext.current
     val amazonLinks = AmazonAffiliateLinkGenerator()
@@ -909,7 +955,7 @@ private fun WeeklyTopSellersSection(
                 text = "Weekly Top Sellers",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black.copy(alpha = 0.92f)
+                color = primaryText
             )
 
             Text(
@@ -1051,7 +1097,9 @@ private fun TopSellerRow(
 private fun SearchResultsSection(
     results: List<OpenLibraryDoc>,
     isSearching: Boolean,
-    onBookClick: (Any) -> Unit
+    onBookClick: (Any) -> Unit,
+    isDark: Boolean,
+    primaryText: Color
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp),
@@ -1066,7 +1114,7 @@ private fun SearchResultsSection(
                 text = "Results",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black.copy(alpha = 0.92f)
+                color = primaryText
             )
             Spacer(modifier = Modifier.weight(1f))
             if (isSearching) {
@@ -1088,7 +1136,8 @@ private fun SearchResultsSection(
                     SearchResultCard(
                         doc = doc,
                         onClick = { onBookClick(doc) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        primaryText = primaryText
                     )
                 }
                 // Fill remaining space if odd number
@@ -1105,7 +1154,8 @@ private fun SearchResultsSection(
 private fun SearchResultCard(
     doc: OpenLibraryDoc,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    primaryText: Color
 ) {
     Column(
         modifier = modifier.clickable(onClick = onClick),
@@ -1131,7 +1181,7 @@ private fun SearchResultCard(
                 text = doc.displayTitle,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black.copy(alpha = 0.92f),
+                color = primaryText,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

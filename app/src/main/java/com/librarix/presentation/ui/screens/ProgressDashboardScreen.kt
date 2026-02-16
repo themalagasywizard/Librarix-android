@@ -39,10 +39,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import com.librarix.presentation.ui.theme.LxAccentGold
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -66,7 +70,7 @@ fun ProgressDashboardScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
             .verticalScroll(scrollState)
     ) {
         // Top bar
@@ -135,7 +139,7 @@ fun HeroLevelCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(22.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
@@ -266,7 +270,7 @@ fun StatCard(
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -300,7 +304,7 @@ fun StatCard(
                 text = value,
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
-                color = Color.Black
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black
             )
         }
     }
@@ -317,7 +321,7 @@ fun YearlyGoalCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = LxSurfaceLight),
+        colors = CardDefaults.cardColors(containerColor = if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -334,7 +338,7 @@ fun YearlyGoalCard(
                     text = "2026 Goal",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color.Black
+                    color = if (LocalIsDarkTheme.current) Color.White else Color.Black
                 )
 
                 Text(
@@ -354,7 +358,7 @@ fun YearlyGoalCard(
                     .height(10.dp)
                     .clip(RoundedCornerShape(5.dp)),
                 color = LxAccentGold,
-                trackColor = LxBorderLight
+                trackColor = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -427,7 +431,7 @@ fun AchievementBadge(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = if (isUnlocked) LxAccentGold.copy(alpha = 0.1f) else LxSurfaceLight
+            containerColor = if (isUnlocked) LxAccentGold.copy(alpha = 0.1f) else if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight
         ),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -440,7 +444,7 @@ fun AchievementBadge(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (isUnlocked) LxAccentGold else LxBorderLight,
+                tint = if (isUnlocked) LxAccentGold else if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight,
                 modifier = Modifier.size(32.dp)
             )
 
@@ -450,7 +454,7 @@ fun AchievementBadge(
                 text = title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
-                color = if (isUnlocked) Color.Black else LxTextSecondary
+                color = if (isUnlocked) (if (LocalIsDarkTheme.current) Color.White else Color.Black) else LxTextSecondary
             )
 
             Text(

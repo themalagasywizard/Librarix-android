@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,7 +62,9 @@ import com.librarix.presentation.ui.screens.HomeScreen
 import com.librarix.presentation.ui.screens.LibraryScreen
 import com.librarix.presentation.ui.screens.SettingsScreen
 import com.librarix.presentation.ui.screens.UpdateProgressView
+import com.librarix.presentation.ui.theme.DarkModePreference
 import com.librarix.presentation.ui.theme.LibrarixTheme
+import com.librarix.presentation.ui.theme.LocalDarkModePreference
 import com.librarix.presentation.ui.theme.LxAccentGold
 import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
@@ -78,8 +80,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LibrarixTheme {
-                MainScreen()
+            val darkModePref = remember { DarkModePreference() }
+            val darkOverride by darkModePref.override
+
+            androidx.compose.runtime.CompositionLocalProvider(
+                LocalDarkModePreference provides darkModePref
+            ) {
+                LibrarixTheme(darkModeOverride = darkOverride) {
+                    MainScreen()
+                }
             }
         }
     }
@@ -285,8 +294,8 @@ fun LibrarixBottomNavBar(
     onTabSelected: (AppTab) -> Unit,
     onAddClick: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
-    val backgroundColor = if (isDark) LxBackgroundDark else Color.White
+    val isDark = LocalIsDarkTheme.current
+    val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
     val borderColor = if (isDark) LxBorderDark else LxBorderLight
     val inactiveColor = if (isDark) Color.White.copy(alpha = 0.40f) else Color.Black.copy(alpha = 0.35f)
 

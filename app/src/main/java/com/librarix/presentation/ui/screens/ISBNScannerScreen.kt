@@ -40,9 +40,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
+import com.librarix.presentation.ui.theme.LxSurfaceDark
 import com.librarix.presentation.ui.theme.LxSurfaceLight
 import com.librarix.presentation.ui.theme.LxTextSecondary
 
@@ -70,7 +73,7 @@ fun ISBNScannerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
     ) {
         // Close button
         Row(
@@ -120,7 +123,7 @@ fun ISBNScannerScreen(
                             color = LxPrimary,
                             shape = RoundedCornerShape(20.dp)
                         )
-                        .background(LxSurfaceLight),
+                        .background(if (LocalIsDarkTheme.current) LxSurfaceDark else LxSurfaceLight),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -188,7 +191,7 @@ fun ISBNScannerScreen(
                         text = "Camera Permission Required",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = Color.Black,
+                        color = if (LocalIsDarkTheme.current) Color.White else Color.Black,
                         textAlign = TextAlign.Center
                     )
 

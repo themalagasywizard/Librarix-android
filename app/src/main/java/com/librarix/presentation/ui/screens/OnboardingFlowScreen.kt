@@ -40,7 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
+import com.librarix.presentation.ui.theme.LxBackgroundDark
 import com.librarix.presentation.ui.theme.LxBackgroundLight
+import com.librarix.presentation.ui.theme.LxBorderDark
 import com.librarix.presentation.ui.theme.LxBorderLight
 import com.librarix.presentation.ui.theme.LxPrimary
 import com.librarix.presentation.ui.theme.LxSurfaceLight
@@ -60,7 +63,7 @@ fun OnboardingFlowScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LxBackgroundLight)
+            .background(if (LocalIsDarkTheme.current) LxBackgroundDark else LxBackgroundLight)
     ) {
         Column(
             modifier = Modifier
@@ -171,7 +174,7 @@ private fun WelcomeStep(
             fontWeight = FontWeight.Black,
             fontSize = 30.sp,
             textAlign = TextAlign.Center,
-            color = Color.Black
+            color = if (LocalIsDarkTheme.current) Color.White else Color.Black
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -224,7 +227,7 @@ private fun ProfileStep(
                 text = "Set up your profile",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = Color.Black
+                color = if (LocalIsDarkTheme.current) Color.White else Color.Black
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -256,7 +259,7 @@ private fun ProfileStep(
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = LxPrimary,
-                    unfocusedBorderColor = LxBorderLight
+                    unfocusedBorderColor = if (LocalIsDarkTheme.current) LxBorderDark else LxBorderLight
                 )
             )
 
@@ -307,7 +310,7 @@ private fun DoneStep(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
-            color = Color.Black
+            color = if (LocalIsDarkTheme.current) Color.White else Color.Black
         )
 
         Spacer(modifier = Modifier.height(8.dp))

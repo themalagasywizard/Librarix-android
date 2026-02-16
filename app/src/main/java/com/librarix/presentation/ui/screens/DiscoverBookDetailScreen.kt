@@ -3,7 +3,7 @@ package com.librarix.presentation.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.librarix.presentation.ui.theme.LocalIsDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -79,7 +79,7 @@ fun DiscoverBookDetailScreen(
     onSaveToLibrary: () -> Unit,
     onShare: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val backgroundColor = if (isDark) LxBackgroundDark else LxBackgroundLight
     val surfaceColor = if (isDark) LxSurfaceDark else LxSurfaceLight
     val borderColor = if (isDark) LxBorderDark else LxBorderLight
